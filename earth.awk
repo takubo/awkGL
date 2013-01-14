@@ -1,3 +1,5 @@
+#!/usr/bin/gawk -f
+
 BEGIN {
     extension("./awkgl.so", "dlload")
     #		     X    Y   Wid  Height
@@ -10,9 +12,9 @@ BEGIN {
     DisplayFunc("display")
     TimerFunc(30, "timer", 0)
     KeyboardFunc("keyboard")
-    wire=0
     Enable("POINT_SMOOTH")
     #Enable("LINE_SMOOTH")
+    wire=0
     MainLoop()
 }
 
@@ -44,7 +46,7 @@ function reshape(width, height)
 
 function timer(val)
 {
-    moon_ang = moon_ang >= 357 ? 0 : moon_ang + 3
+    moon_ang = moon_ang >= 359 ? 0 : moon_ang + 1
     #PostRedisplay()
     TimerFunc(30, "timer", 0)
 }
@@ -56,7 +58,7 @@ function display()
 
     DrawAxes(500)
 
-    Color(32, 32, 255)
+    Color(32, 80, 207)
     if (wire) {
 	WireSphere(35.0, 24, 18)	# Earth
     } else {
@@ -65,7 +67,7 @@ function display()
 
     PushMatrix()
     Rotate(moon_ang, 0.0, 0.0, 1.0)	# z軸周りにmoon_ang度回転
-    Translate(100.0, 0.0, 0.0)		# x軸に60平行移動
+    Translate(130.0, 0.0, 0.0)		# x軸に平行移動
 
     Color(255, 255, 64)
     if (wire) {
