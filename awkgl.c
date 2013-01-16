@@ -23,7 +23,17 @@ static void set_default_user_func(void);
 //?static NODE* do_GameMode(int);
 static NODE* do_ReshapeFunc(int);
 static NODE* do_Viewport(int);
-static NODE* do_SetWindowPosSize(int);
+static NODE* do_SetWindowPosSize(int);	// Only awkGL
+static NODE* do_SetWindowTitle(int);
+static NODE* do_SetIconTitle(int);
+static NODE* do_ReshapeWindow(int);
+static NODE* do_PositionWindow(int);
+static NODE* do_ShowWindow(int);
+static NODE* do_HideWindow(int);
+static NODE* do_IconifyWindow(int);
+static NODE* do_PushWindow(int);
+static NODE* do_PopWindow(int);
+static NODE* do_FullScreen(int);
 static NODE* do_ClearColor(int);
 static NODE* do_CreateWindow(int);
 static NODE* do_KeyboardFunc(int);
@@ -135,6 +145,16 @@ dlload(NODE *tree, void *dl)
 	make_builtin("ReshapeFunc", do_ReshapeFunc, 4);
 	make_builtin("Viewport", do_Viewport, 4);
 	make_builtin("SetWindowPosSize", do_SetWindowPosSize, 4);
+	make_builtin("SetWindowTitle", do_SetWindowTitle, 1);
+	make_builtin("SetIconTitle", do_SetIconTitle, 1);
+	make_builtin("ReshapeWindow", do_ReshapeWindow, 2);
+	make_builtin("positionWindow", do_PositionWindow, 2);
+	make_builtin("ShowWindow", do_ShowWindow, 0);
+	make_builtin("HideWindow", do_HideWindow, 0);
+	make_builtin("IconifyWindow", do_IconifyWindow, 0);
+	make_builtin("PushWindow", do_PushWindow, 0);
+	make_builtin("PopWindow", do_PopWindow, 0);
+	make_builtin("FullScreen", do_FullScreen, 0);
 	//make_builtin("GameMode", do_GameMode, 1);
 	make_builtin("CreateWindow", do_CreateWindow, 1);
 	make_builtin("KeyboardFunc", do_KeyboardFunc, 1);
@@ -309,6 +329,104 @@ do_SetWindowPosSize(int nargs)
 
 	glutInitWindowPosition(x, y);
 	glutInitWindowSize(width, height);
+	return make_number((AWKNUM) 0);
+}
+
+static NODE *
+do_SetWindowTitle(int nargs)
+{
+	NODE *tmp;
+
+	tmp = (NODE*) get_actual_argument(0, FALSE, FALSE);
+	force_string(tmp);
+
+	glutSetWindowTitle(tmp->stptr);
+	return make_number((AWKNUM) 0);
+}
+
+	static NODE *
+do_SetIconTitle(int nargs)
+{
+	NODE *tmp;
+
+	tmp = (NODE*) get_actual_argument(0, FALSE, FALSE);
+	force_string(tmp);
+
+	glutSetIconTitle(tmp->stptr);
+	return make_number((AWKNUM) 0);
+}
+
+	static NODE *
+do_ReshapeWindow(int nargs)
+{
+	NODE *tmp;
+	int width, height;
+
+	tmp    = (NODE*) get_actual_argument(0, FALSE, FALSE);
+	width  = (int) force_number(tmp);
+
+	tmp    = (NODE*) get_actual_argument(1, FALSE, FALSE);
+	height = (int) force_number(tmp);
+
+	glutReshapeWindow(width, height);
+	return make_number((AWKNUM) 0);
+}
+
+	static NODE *
+do_PositionWindow(int nargs)
+{
+	NODE *tmp;
+	int x, y;
+
+	tmp    = (NODE*) get_actual_argument(0, FALSE, FALSE);
+	x      = (int) force_number(tmp);
+
+	tmp    = (NODE*) get_actual_argument(1, FALSE, FALSE);
+	y      = (int) force_number(tmp);
+
+	glutPositionWindow(x, y);
+	return make_number((AWKNUM) 0);
+}
+
+static NODE *
+do_ShowWindow(int nargs)
+{
+	glutShowWindow();
+	return make_number((AWKNUM) 0);
+}
+
+static NODE *
+do_HideWindow(int nargs)
+{
+	glutHideWindow();
+	return make_number((AWKNUM) 0);
+}
+
+static NODE *
+do_IconifyWindow(int nargs)
+{
+	glutIconifyWindow();
+	return make_number((AWKNUM) 0);
+}
+
+static NODE *
+do_PushWindow(int nargs)
+{
+	glutPushWindow();
+	return make_number((AWKNUM) 0);
+}
+
+static NODE *
+do_PopWindow(int nargs)
+{
+	glutPopWindow();
+	return make_number((AWKNUM) 0);
+}
+
+static NODE *
+do_FullScreen(int nargs)
+{
+	glutFullScreen();
 	return make_number((AWKNUM) 0);
 }
 
