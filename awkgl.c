@@ -2455,5 +2455,3 @@ do_DrawAxes(int nargs)
 
 	return make_number((AWKNUM) 0);
 }
-
-

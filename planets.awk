@@ -45,6 +45,8 @@ function keyboard(key, x, y)
 	orbit = !orbit
 	break
     case "f":
+    case "\r":
+    case "\n":
 	if (!fullscreen)
 	    FullScreen()
 	else
@@ -71,7 +73,6 @@ function timer(val,    i)
     for (i in obj) {
 	obj[i]["ang"] = (obj[i]["ang"] + obj[i]["notch"]) % 360
     }
-
     TimerFunc(base_time, "timer", 0)
 }
 
