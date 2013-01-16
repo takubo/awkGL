@@ -19,6 +19,7 @@ NODE *Display_user_func = NULL;
 NODE *Idle_user_func = NULL;
 NODE *Timer_user_func = NULL;
 
+static void set_default_user_func(void);
 //?static NODE* do_GameMode(int);
 static NODE* do_ReshapeFunc(int);
 static NODE* do_Viewport(int);
@@ -55,7 +56,8 @@ static void AgEntry(int);
 static void AgDisplay(void);
 static void AgTimer(int);
 static AWKNUM callback_user_func(NODE *, NODE *[], int);
-static NODE* user_func_sub(void);
+static NODE* user_func(void);
+static NODE* user_func_sub(const char *);
 void resize(int, int);
 static NODE* do_Begin(int);
 static NODE* do_End(int);
@@ -216,8 +218,70 @@ dlload(NODE *tree, void *dl)
 
 	int argc=0; char *argv[1]; glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
-	
+
 	return make_number((AWKNUM) 0);
+}
+
+static void
+set_default_user_func()
+{
+	NODE *fnc_ptr;
+
+	fnc_ptr = user_func_sub("reshape");
+	if (fnc_ptr != NULL) {
+		Reshape_user_func = fnc_ptr;
+		glutReshapeFunc(AgReshape);
+	}
+
+	fnc_ptr = user_func_sub("display");
+	if (fnc_ptr != NULL) {
+		Display_user_func = fnc_ptr;
+		glutDisplayFunc(AgDisplay);
+	}
+
+	fnc_ptr = user_func_sub("keyboard");
+	if (fnc_ptr != NULL) {
+		Keyboard_user_func = fnc_ptr;
+		glutKeyboardFunc(AgKeyboard);
+	}
+
+	fnc_ptr = user_func_sub("keyboardup");
+	if (fnc_ptr != NULL) {
+		KeyboardUp_user_func = fnc_ptr;
+		glutKeyboardUpFunc(AgKeyboardUp);
+	}
+
+	fnc_ptr = user_func_sub("special");
+	if (fnc_ptr != NULL) {
+		Special_user_func = fnc_ptr;
+		glutSpecialFunc(AgSpecial);
+	}
+
+	fnc_ptr = user_func_sub("specialup");
+	if (fnc_ptr != NULL) {
+		SpecialUp_user_func = fnc_ptr;
+		glutSpecialUpFunc(AgSpecialUp);
+	}
+
+	fnc_ptr = user_func_sub("mouse");
+	if (fnc_ptr != NULL) {
+		Mouse_user_func = fnc_ptr;
+		glutMouseFunc(AgMouse);
+	}
+
+	fnc_ptr = user_func_sub("motion");
+	if (fnc_ptr != NULL) {
+		Motion_user_func = fnc_ptr;
+		glutMotionFunc(AgMotion);
+	}
+
+	fnc_ptr = user_func_sub("entry");
+	if (fnc_ptr != NULL) {
+		Entry_user_func = fnc_ptr;
+		glutEntryFunc(AgEntry);
+	}
+
+	return;
 }
 
 static NODE *
@@ -270,6 +334,9 @@ do_CreateWindow(int nargs)
 	force_string(tmp);
 
 	glutCreateWindow(tmp->stptr);
+
+	set_default_user_func();
+
 	return make_number((AWKNUM) 0);
 }
 
@@ -301,7 +368,7 @@ do_Viewport(int nargs)
 static NODE *
 do_ReshapeFunc(int nargs)
 {
-	NODE *func_ptr = user_func_sub();
+	NODE *func_ptr = user_func();
 	Reshape_user_func = func_ptr;
 
 	glutReshapeFunc(AgReshape);
@@ -311,7 +378,7 @@ do_ReshapeFunc(int nargs)
 static NODE *
 do_KeyboardFunc(int nargs)
 {
-	NODE *func_ptr = user_func_sub();
+	NODE *func_ptr = user_func();
 	Keyboard_user_func = func_ptr;
 
 	glutKeyboardFunc(AgKeyboard);
@@ -321,7 +388,7 @@ do_KeyboardFunc(int nargs)
 static NODE *
 do_KeyboardUpFunc(int nargs)
 {
-	NODE *func_ptr = user_func_sub();
+	NODE *func_ptr = user_func();
 	KeyboardUp_user_func = func_ptr;
 
 	glutKeyboardUpFunc(AgKeyboardUp);
@@ -331,7 +398,7 @@ do_KeyboardUpFunc(int nargs)
 static NODE *
 do_SpecialFunc(int nargs)
 {
-	NODE *func_ptr = user_func_sub();
+	NODE *func_ptr = user_func();
 	Special_user_func = func_ptr;
 
 	glutSpecialFunc(AgSpecial);
@@ -341,7 +408,7 @@ do_SpecialFunc(int nargs)
 static NODE *
 do_SpecialUpFunc(int nargs)
 {
-	NODE *func_ptr = user_func_sub();
+	NODE *func_ptr = user_func();
 	SpecialUp_user_func = func_ptr;
 
 	glutSpecialUpFunc(AgSpecialUp);
@@ -351,7 +418,7 @@ do_SpecialUpFunc(int nargs)
 static NODE *
 do_MouseFunc(int nargs)
 {
-	NODE *func_ptr = user_func_sub();
+	NODE *func_ptr = user_func();
 	Mouse_user_func = func_ptr;
 
 	glutMouseFunc(AgMouse);
@@ -361,7 +428,7 @@ do_MouseFunc(int nargs)
 static NODE *
 do_MotionFunc(int nargs)
 {
-	NODE *func_ptr = user_func_sub();
+	NODE *func_ptr = user_func();
 	Motion_user_func = func_ptr;
 
 	glutMotionFunc(AgMotion);
@@ -371,7 +438,7 @@ do_MotionFunc(int nargs)
 static NODE *
 do_PassiveMotionFunc(int nargs)
 {
-	NODE *func_ptr = user_func_sub();
+	NODE *func_ptr = user_func();
 	PassiveMotion_user_func = func_ptr;
 
 	glutPassiveMotionFunc(AgPassiveMotion);
@@ -405,7 +472,7 @@ do_GetModifiers(int nargs)
 static NODE *
 do_EntryFunc(int nargs)
 {
-	NODE *func_ptr = user_func_sub();
+	NODE *func_ptr = user_func();
 	Entry_user_func = func_ptr;
 
 	glutEntryFunc(AgEntry);
@@ -415,7 +482,7 @@ do_EntryFunc(int nargs)
 static NODE *
 do_DisplayFunc(int nargs)
 {
-	NODE *func_ptr = user_func_sub();
+	NODE *func_ptr = user_func();
 	Display_user_func = func_ptr;
 
 	glutDisplayFunc(AgDisplay);
@@ -435,7 +502,7 @@ do_TimerFunc(int nargs)
 
 	tmp   = (NODE*) get_actual_argument(1, FALSE, FALSE);
 	force_string(tmp);
-	NODE *fnc_ptr = lookup(tmp->stptr);
+	NODE *fnc_ptr = lookup(tmp->stptr);	//TODO
 	if (fnc_ptr == NULL || fnc_ptr->type != Node_func)
 		fatal(_("Timer callback function `%s' is not defined"), tmp->stptr);
 	Timer_user_func = fnc_ptr;
@@ -448,16 +515,33 @@ do_TimerFunc(int nargs)
 }
 
 static NODE *
-user_func_sub(void)
+user_func(void)
 {
 	NODE *tmp;
 	NODE *fnc_ptr;
+
 	tmp = (NODE*) get_actual_argument(0, FALSE, FALSE);
 	force_string(tmp);
-	//fnc_name = (char*) make_string(tmp->stptr, tmp->stlen);
-	fnc_ptr = lookup(tmp->stptr);
-	if (fnc_ptr == NULL || fnc_ptr->type != Node_func)
-		fatal(_("keyboard callback function `%s' is not defined"), tmp->stptr);
+	
+	fnc_ptr = user_func_sub(tmp->stptr);
+
+	if (fnc_ptr == NULL)
+		fatal(_("keyboard callback function `%s' is not defined"), tmp->stptr);	//TODO
+
+	return fnc_ptr;
+}
+
+static NODE *
+user_func_sub(const char * fnc_name)
+{
+	NODE *fnc_ptr;
+
+	/* fnc_name が存在しないとき、返り値はNULL */
+	fnc_ptr = lookup(fnc_name);
+
+	if (fnc_ptr != NULL && fnc_ptr->type != Node_func)
+		fnc_ptr = NULL;
+
 	return fnc_ptr;
 }
 
@@ -592,7 +676,7 @@ AgKeyboard(unsigned char key, int x, int y)
 	if (key > 127) //charで対応できない
 		fatal(_("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"));
 
-	args[0] = make_string(&key, 1);
+	args[0] = make_string((char *) &key, 1);
 	args[1] = make_number((AWKNUM) x);
 	args[2] = make_number((AWKNUM) y);
 	args[3] = NULL;
@@ -620,7 +704,7 @@ AgKeyboardUp(unsigned char key, int x, int y)
 	if (key > 127) //charで対応できない
 		fatal(_("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"));
 
-	args[0] = make_string(&key, 1);
+	args[0] = make_string((char *) &key, 1);
 	args[1] = make_number((AWKNUM) x);
 	args[2] = make_number((AWKNUM) y);
 	args[3] = NULL;
@@ -935,9 +1019,8 @@ do_Begin(int nargs)
 		type = GL_POLYGON;
 	} else if (!strcmp(str, "TRIANGLE_FAN")) {
 		type = GL_TRIANGLE_FAN;
-	} else {
-		return;
 	}
+
 	glBegin(type);
 	return make_number((AWKNUM) 0);
 }
@@ -1287,31 +1370,31 @@ draw_pixels_format(const char *str)
 	GLenum format;
 
 	if (!strcmp(str, "COLOR_INDEX")) {
-		GL_COLOR_INDEX;		//単一の値で構成されるカラー指標
+		format = GL_COLOR_INDEX;	//単一の値で構成されるカラー指標
 	} else if (!strcmp(str, "STENCIL_INDEX")) {
-		GL_STENCIL_INDEX;	//単一の値で構成されるステンシル指標
+		format = GL_STENCIL_INDEX;	//単一の値で構成されるステンシル指標
 	} else if (!strcmp(str, "DEPTH_COMPONENT")) {
-		GL_DEPTH_COMPONENT;	//単一の値で構成されるデプス
+		format = GL_DEPTH_COMPONENT;	//単一の値で構成されるデプス
 	} else if (!strcmp(str, "RGBA")) {
-		GL_RGBA;		//赤、緑、青、アルファの順で構成されるカラー
+		format = GL_RGBA;		//赤、緑、青、アルファの順で構成されるカラー
 	} else if (!strcmp(str, "RED")) {
-		GL_RED;			//単一の値で構成される赤要素
+		format = GL_RED;		//単一の値で構成される赤要素
 	} else if (!strcmp(str, "GREEN")) {
-		GL_GREEN;		//単一の値で構成される緑要素
+		format = GL_GREEN;		//単一の値で構成される緑要素
 	} else if (!strcmp(str, "BLUE")) {
-		GL_BLUE;		//単一の値で構成される青要素
+		format = GL_BLUE;		//単一の値で構成される青要素
 	} else if (!strcmp(str, "ALPHA")) {
-		GL_ALPHA;		//単一の値で構成されるアルファ要素
+		format = GL_ALPHA;		//単一の値で構成されるアルファ要素
 	} else if (!strcmp(str, "RGB")) {
-		GL_RGB;			//赤、緑、青の順で構成されるカラー
+		format = GL_RGB;		//赤、緑、青の順で構成されるカラー
 	} else if (!strcmp(str, "LUMINANCE")) {
-		GL_LUMINANCE;		//単一の値で構成される輝度
+		format = GL_LUMINANCE;		//単一の値で構成される輝度
 	} else if (!strcmp(str, "LUMINANCE_ALPHA")) {
-		GL_LUMINANCE_ALPHA;	//輝度、アルファの順で構成されるカラー
+		format = GL_LUMINANCE_ALPHA;	//輝度、アルファの順で構成されるカラー
 	} else if (!strcmp(str, "BGR_EXT")) {
-		GL_BGR_EXT;		//青、緑、赤の順で構成されるカラー
+		format = GL_BGR_EXT;		//青、緑、赤の順で構成されるカラー
 	} else if (!strcmp(str, "BGRA_EXT")) {
-		GL_BGRA_EXT;		//青、緑、赤、アルファの順で構成されるカラー
+		format = GL_BGRA_EXT;		//青、緑、赤、アルファの順で構成されるカラー
 	}
 
 	return format;
@@ -1645,6 +1728,7 @@ GLenum material_pname(const char *str)
 	} else if (!strcmp(str, "COLOR_INDEXES")) {
 		pname = GL_COLOR_INDEXES;
 	}
+
 	return pname;
 }
 
@@ -1687,7 +1771,7 @@ do_PolygonMode(int nargs)
 
 	tmp  = (NODE*) get_actual_argument(1, FALSE, FALSE);
 	force_string(tmp);
-	face = polygon_mode(tmp->stptr);
+	mode = polygon_mode(tmp->stptr);
 
 	glPolygonMode(face, mode);
 	return make_number((AWKNUM) 0);
@@ -1979,9 +2063,6 @@ do_WireCube(int nargs)
 static NODE *
 do_SolidTetrahedron(int nargs)
 {
-	NODE *tmp;
-	GLdouble size;
-
 	glutSolidTetrahedron();
 	return make_number((AWKNUM) 0);
 }
@@ -1989,9 +2070,6 @@ do_SolidTetrahedron(int nargs)
 static NODE *
 do_WireTetrahedron(int nargs)
 {
-	NODE *tmp;
-	GLdouble size;
-
 	glutWireTetrahedron();
 	return make_number((AWKNUM) 0);
 }
@@ -2001,9 +2079,6 @@ do_WireTetrahedron(int nargs)
 static NODE *
 do_SolidOctahedron(int nargs)
 {
-	NODE *tmp;
-	GLdouble size;
-
 	glutSolidOctahedron();
 	return make_number((AWKNUM) 0);
 }
@@ -2011,9 +2086,6 @@ do_SolidOctahedron(int nargs)
 static NODE *
 do_WireOctahedron(int nargs)
 {
-	NODE *tmp;
-	GLdouble size;
-
 	glutWireOctahedron();
 	return make_number((AWKNUM) 0);
 }
@@ -2023,9 +2095,6 @@ do_WireOctahedron(int nargs)
 static NODE *
 do_SolidDodecahedron(int nargs)
 {
-	NODE *tmp;
-	GLdouble size;
-
 	glutSolidDodecahedron();
 	return make_number((AWKNUM) 0);
 }
@@ -2033,9 +2102,6 @@ do_SolidDodecahedron(int nargs)
 static NODE *
 do_WireDodecahedron(int nargs)
 {
-	NODE *tmp;
-	GLdouble size;
-
 	glutWireDodecahedron();
 	return make_number((AWKNUM) 0);
 }
@@ -2045,9 +2111,6 @@ do_WireDodecahedron(int nargs)
 static NODE *
 do_SolidIcosahedron(int nargs)
 {
-	NODE *tmp;
-	GLdouble size;
-
 	glutSolidIcosahedron();
 	return make_number((AWKNUM) 0);
 }
@@ -2055,9 +2118,6 @@ do_SolidIcosahedron(int nargs)
 static NODE *
 do_WireIcosahedron(int nargs)
 {
-	NODE *tmp;
-	GLdouble size;
-
 	glutWireIcosahedron();
 	return make_number((AWKNUM) 0);
 }

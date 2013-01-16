@@ -15,13 +15,6 @@ BEGIN {
     CreateWindow("AwkGL Demo1")
     #(0-255)	 R   G    B
     ClearColor(21, 10, 89)
-    #ReshapeFunc("reshape")
-    KeyboardFunc("keyboard")
-    SpecialFunc("special")
-    #MouseFunc("mouse")
-    MotionFunc("motion")
-    #PassiveMotionFunc("passivemotion")
-    DisplayFunc("display")
     MainLoop()
 }
 
