@@ -161,61 +161,61 @@ dlload(NODE *tree, void *dl)
 	make_builtin("Vertex3d", do_Vertex3d, 3);
 //	make_builtin("Point", do_Point, 3);
 //	make_builtin("Line", do_Line, 3);
-	make_builtin("Ortho",	do_Ortho, 6);
-	make_builtin("Frustum",	do_Frustum, 6);
-	make_builtin("Perspective",	do_Perspective, 4);
-	make_builtin("LookAt",	do_Lookat, 9);
+	make_builtin("Ortho", do_Ortho, 6);
+	make_builtin("Frustum", do_Frustum, 6);
+	make_builtin("Perspective", do_Perspective, 4);
+	make_builtin("LookAt", do_Lookat, 9);
 
-	make_builtin("LoadIdentity",	do_LoadIdentity, 1);
-	make_builtin("PushMatrix",	do_PushMatrix, 1);
-	make_builtin("PopMatrix",	do_PopMatrix, 1);
+	make_builtin("LoadIdentity", do_LoadIdentity, 1);
+	make_builtin("PushMatrix", do_PushMatrix, 1);
+	make_builtin("PopMatrix", do_PopMatrix, 1);
 
-	make_builtin("Rotate",	do_Rotate, 4);
-	make_builtin("Translate",	do_Transrate, 4);
-	make_builtin("Scale",	do_Scale, 4);
+	make_builtin("Rotate", do_Rotate, 4);
+	make_builtin("Translate", do_Transrate, 4);
+	make_builtin("Scale", do_Scale, 4);
 
-	make_builtin("DrawPixels",	do_DrawPixels, 5);
+	make_builtin("DrawPixels", do_DrawPixels, 5);
 
-	make_builtin("Light",	do_Light, 9);
-	make_builtin("Normal",	do_Normal, 3);
-	make_builtin("Material",	do_Material, 8);
+	make_builtin("Light", do_Light, 9);
+	make_builtin("Normal", do_Normal, 3);
+	make_builtin("Material", do_Material, 8);
 
-	make_builtin("PointSize",	do_PointSize, 1);
-	make_builtin("LineWidth",	do_LineWidth, 1);
-	make_builtin("PolygonMode",	do_PolygonMode, 2);
-	make_builtin("LineStipple",	do_LineStipple, 2);
+	make_builtin("PointSize", do_PointSize, 1);
+	make_builtin("LineWidth", do_LineWidth, 1);
+	make_builtin("PolygonMode", do_PolygonMode, 2);
+	make_builtin("LineStipple", do_LineStipple, 2);
 
-	make_builtin("SolidSphere",		do_SolidSphere, 3);
-	make_builtin("WireSphere",		do_WireSphere, 3);
-	make_builtin("SolidCone",		do_SolidCone, 4);
-	make_builtin("WireCone",		do_WireCone, 4);
-	make_builtin("SolidCylinder",	do_SolidCylinder, 4);
-	make_builtin("WireCylinder",	do_WireCylinder, 4);
-	make_builtin("SolidTorus",		do_SolidTorus, 4);
-	make_builtin("WireTorus",		do_WireTorus, 4);
-	make_builtin("SolidCube",		do_SolidCube, 1);
-	make_builtin("WireCube",		do_WireCube, 1);
-	make_builtin("SolidTetrahedron",	do_SolidTetrahedron, 0);
-	make_builtin("WireTetrahedron",	do_WireTetrahedron, 0);
-	make_builtin("SolidOctahedron",	do_SolidOctahedron, 0);
-	make_builtin("WireOctahedron",	do_WireOctahedron, 0);
-	make_builtin("SolidDodecahedron",	do_SolidDodecahedron, 0);
-	make_builtin("WireDodecahedron",	do_WireDodecahedron, 0);
-	make_builtin("SolidIcosahedron",	do_SolidIcosahedron, 0);
-	make_builtin("WireIcosahedron",	do_WireIcosahedron, 0);
-	make_builtin("SolidTeapot",		do_SolidTeapot, 1);
-	make_builtin("WireTeapot",		do_WireTeapot, 1);
+	make_builtin("SolidSphere", do_SolidSphere, 3);
+	make_builtin("WireSphere", do_WireSphere, 3);
+	make_builtin("SolidCone", do_SolidCone, 4);
+	make_builtin("WireCone", do_WireCone, 4);
+	make_builtin("SolidCylinder", do_SolidCylinder, 4);
+	make_builtin("WireCylinder", do_WireCylinder, 4);
+	make_builtin("SolidTorus", do_SolidTorus, 4);
+	make_builtin("WireTorus", do_WireTorus, 4);
+	make_builtin("SolidCube", do_SolidCube, 1);
+	make_builtin("WireCube", do_WireCube, 1);
+	make_builtin("SolidTetrahedron", do_SolidTetrahedron, 1);
+	make_builtin("WireTetrahedron", do_WireTetrahedron, 1);
+	make_builtin("SolidOctahedron", do_SolidOctahedron, 1);
+	make_builtin("WireOctahedron", do_WireOctahedron, 1);
+	make_builtin("SolidDodecahedron", do_SolidDodecahedron, 1);
+	make_builtin("WireDodecahedron", do_WireDodecahedron, 1);
+	make_builtin("SolidIcosahedron", do_SolidIcosahedron, 1);
+	make_builtin("WireIcosahedron", do_WireIcosahedron, 1);
+	make_builtin("SolidTeapot", do_SolidTeapot, 1);
+	make_builtin("WireTeapot", do_WireTeapot, 1);
 
-	make_builtin("DrawCircle",	do_DrawCircle, 3);
-	make_builtin("DrawAxes",	do_DrawAxes, 1);
+	make_builtin("DrawCircle", do_DrawCircle, 3);
+	make_builtin("DrawAxes", do_DrawAxes, 1);
 
-	make_builtin("pi",		do_pi, 1);
-	make_builtin("radian",	do_d2r, 1);
-	make_builtin("degree",	do_r2d, 1);
-	make_builtin("d2r",		do_d2r, 1);
-	make_builtin("r2d",		do_r2d, 1);
-	make_builtin("deg2rad",	do_d2r, 1);
-	make_builtin("rad2deg",	do_r2d, 1);
+	make_builtin("pi", do_pi, 1);
+	make_builtin("radian", do_d2r, 1);
+	make_builtin("degree", do_r2d, 1);
+	make_builtin("d2r", do_d2r, 1);
+	make_builtin("r2d", do_r2d, 1);
+	make_builtin("deg2rad", do_d2r, 1);
+	make_builtin("rad2deg", do_r2d, 1);
 
 
 	int argc=0; char *argv[1]; glutInit(&argc, argv);
@@ -1094,6 +1094,7 @@ do_Point(int nargs)
 	glVertex2d(0.5, 0.5);
 	glColor3d(1.0, 1.0, 0.0); // 黄
 	glVertex2d(-0.5, 0.5);
+	return make_number((AWKNUM) 0);
 }
 
 
@@ -2065,14 +2066,34 @@ do_WireCube(int nargs)
 static NODE *
 do_SolidTetrahedron(int nargs)
 {
+	NODE *tmp;
+	GLdouble size;
+
+	tmp  = (NODE*) get_actual_argument(0, FALSE, FALSE);
+	size = (GLdouble) force_number(tmp);
+
+	glPushMatrix();
+	glScaled(size, size, size);
 	glutSolidTetrahedron();
+	glPopMatrix();
+
 	return make_number((AWKNUM) 0);
 }
 
 static NODE *
 do_WireTetrahedron(int nargs)
 {
+	NODE *tmp;
+	GLdouble size;
+
+	tmp  = (NODE*) get_actual_argument(0, FALSE, FALSE);
+	size = (GLdouble) force_number(tmp);
+
+	glPushMatrix();
+	glScaled(size, size, size);
 	glutWireTetrahedron();
+	glPopMatrix();
+
 	return make_number((AWKNUM) 0);
 }
 
@@ -2081,14 +2102,34 @@ do_WireTetrahedron(int nargs)
 static NODE *
 do_SolidOctahedron(int nargs)
 {
+	NODE *tmp;
+	GLdouble size;
+
+	tmp  = (NODE*) get_actual_argument(0, FALSE, FALSE);
+	size = (GLdouble) force_number(tmp);
+
+	glPushMatrix();
+	glScaled(size, size, size);
 	glutSolidOctahedron();
+	glPopMatrix();
+
 	return make_number((AWKNUM) 0);
 }
 
 static NODE *
 do_WireOctahedron(int nargs)
 {
+	NODE *tmp;
+	GLdouble size;
+
+	tmp  = (NODE*) get_actual_argument(0, FALSE, FALSE);
+	size = (GLdouble) force_number(tmp);
+
+	glPushMatrix();
+	glScaled(size, size, size);
 	glutWireOctahedron();
+	glPopMatrix();
+
 	return make_number((AWKNUM) 0);
 }
 
@@ -2097,14 +2138,34 @@ do_WireOctahedron(int nargs)
 static NODE *
 do_SolidDodecahedron(int nargs)
 {
+	NODE *tmp;
+	GLdouble size;
+
+	tmp  = (NODE*) get_actual_argument(0, FALSE, FALSE);
+	size = (GLdouble) force_number(tmp);
+
+	glPushMatrix();
+	glScaled(size, size, size);
 	glutSolidDodecahedron();
+	glPopMatrix();
+
 	return make_number((AWKNUM) 0);
 }
 
 static NODE *
 do_WireDodecahedron(int nargs)
 {
+	NODE *tmp;
+	GLdouble size;
+
+	tmp  = (NODE*) get_actual_argument(0, FALSE, FALSE);
+	size = (GLdouble) force_number(tmp);
+
+	glPushMatrix();
+	glScaled(size, size, size);
 	glutWireDodecahedron();
+	glPopMatrix();
+
 	return make_number((AWKNUM) 0);
 }
 
@@ -2113,14 +2174,34 @@ do_WireDodecahedron(int nargs)
 static NODE *
 do_SolidIcosahedron(int nargs)
 {
+	NODE *tmp;
+	GLdouble size;
+
+	tmp  = (NODE*) get_actual_argument(0, FALSE, FALSE);
+	size = (GLdouble) force_number(tmp);
+
+	glPushMatrix();
+	glScaled(size, size, size);
 	glutSolidIcosahedron();
+	glPopMatrix();
+
 	return make_number((AWKNUM) 0);
 }
 
 static NODE *
 do_WireIcosahedron(int nargs)
 {
+	NODE *tmp;
+	GLdouble size;
+
+	tmp  = (NODE*) get_actual_argument(0, FALSE, FALSE);
+	size = (GLdouble) force_number(tmp);
+
+	glPushMatrix();
+	glScaled(size, size, size);
 	glutWireIcosahedron();
+	glPopMatrix();
+
 	return make_number((AWKNUM) 0);
 }
 
