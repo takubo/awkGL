@@ -119,7 +119,8 @@ static NODE* do_WireTeapot(int);
 
 //static NODE* do_Point(int);		//??
 //static NODE* do_Line(int);		//??
-static NODE* do_DrawAxes(int);		//??
+static NODE * do_DrawCircle(int nargs);
+static NODE * do_DrawAxes(int);
 //static NODE* do_DrawSolidFace(int)	//??
 //static NODE* do_DrawWireFace(int);	//??
 
@@ -205,6 +206,7 @@ dlload(NODE *tree, void *dl)
 	make_builtin("SolidTeapot",		do_SolidTeapot, 1);
 	make_builtin("WireTeapot",		do_WireTeapot, 1);
 
+	make_builtin("DrawCircle",	do_DrawCircle, 3);
 	make_builtin("DrawAxes",	do_DrawAxes, 1);
 
 	make_builtin("pi",		do_pi, 1);
@@ -2191,6 +2193,42 @@ do_r2d(int nargs)
 	}
 }
 
+// 円
+static NODE *
+do_DrawCircle(int nargs)
+{
+	NODE *tmp;
+	GLdouble radius;
+	GLint slices;
+	int fill;
+	int i;
+	GLdouble a;
+
+	tmp    = (NODE*) get_actual_argument(0, FALSE, FALSE);
+	radius = (GLdouble) force_number(tmp);
+
+	tmp    = (NODE*) get_actual_argument(1, FALSE, FALSE);
+	slices = (GLint) force_number(tmp);
+
+	tmp    = (NODE*) get_actual_argument(2, FALSE, FALSE);
+	fill   = (int) force_number(tmp);
+
+	a = (2 * M_PI) / slices;
+
+	if (fill) {
+		glBegin(GL_TRIANGLE_FAN);
+		glVertex2d(0, 0);
+	} else {
+		glBegin(GL_LINE_LOOP);
+	}
+	for (i = 0; i <= slices; i++) {
+		glVertex2d(radius * cos(i * a), radius * sin(i * a));
+	}
+	glEnd();
+
+	return make_number((AWKNUM) 0);
+}
+
 static NODE *
 do_DrawAxes(int nargs)
 {
@@ -2199,7 +2237,7 @@ do_DrawAxes(int nargs)
 
 	tmp = (NODE*) get_actual_argument(0, FALSE, FALSE);
 	len = (GLdouble) force_number(tmp);
-
+//TODO Lighting
 	//glPushMatrix();
 	//glLoadIdentity();
 	//glLineWidth(2.0);

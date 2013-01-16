@@ -4,7 +4,7 @@ BEGIN {
     base_ang = 1
     base_time = 30
 
-    wire = 1
+    orbit = 1
 }
 
 /^\w/ {
@@ -45,7 +45,7 @@ function keyboard(key, x, y)
 {
     switch (key) {
     case " ":
-	wire = !wire
+	orbit = !orbit
 	break
     case "q":
     case "Q":
@@ -84,7 +84,10 @@ function display(    i)
     LoadIdentity()
 
     for (i in obj) {
-	circle(obj[i]["distance"])
+	if (orbit) {
+	    Color(255.0, 255.0, 255.0)
+	    DrawCircle(obj[i]["distance"], 120, 0)
+	}
 
 	PushMatrix()
 
@@ -93,25 +96,8 @@ function display(    i)
 
 	Color(obj[i]["red"], obj[i]["green"], obj[i]["blue"])
 
-	if (wire) {
-	    WireSphere(obj[i]["radius"], 18, 12)
-	} else {
-	    SolidSphere(obj[i]["radius"], 18, 12)
-	}
+	WireSphere(obj[i]["radius"], 18, 12)
 
 	PopMatrix()
     }
-}
-
-function circle(r,    i, n)
-{
-    Begin("LINE_LOOP")
-    Color(255.0, 255.0, 255.0)
-    #Vertex2d(ObjX, ObjY)
-    n = 108
-    for (i = 0; i <= n; i++) {
-	Vertex2d(r * cos(i * 360 / n * 3.14 / 180), \
-		r * sin(i * 360 / n * 3.14 / 180))
-    }
-    End()
 }
