@@ -12,3 +12,8 @@ all: awkgl.so
 awkgl.so: awkgl.c makefile
 	${CC} $< ${CFLAGS}
 	${CC} awkgl.o -o $@ ${LDFLAGS}
+
+
+.PHONY:clean
+clean:
+	rm awkgl.o awkgl.so
