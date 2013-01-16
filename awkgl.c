@@ -1081,9 +1081,9 @@ callback_user_func(NODE *func_ptr, NODE *args[], int argc)
 	 * to undefined (0). `exit' is handled in sort_user_func.
 	 */
 
-	extern int currule;
-	(code + 1)->inrule = currule;	/* save current rule */
-	currule = 0;
+	// extern int currule;
+	// (code + 1)->inrule = currule;	/* save current rule */
+	//currule = 0;	//TODO
 
 	for (i = 0; args[i] != NULL; i++) { PUSH(args[i]); }
 
@@ -1093,7 +1093,7 @@ callback_user_func(NODE *func_ptr, NODE *args[], int argc)
 
 	POP_NUMBER(ret);
 
-	currule = (code + 1)->inrule;   /* restore current rule */ 
+	// currule = (code + 1)->inrule;   /* restore current rule */ 
 	bcfree(code->nexti);            /* Op_stop */
 	bcfree(code);                   /* Op_func_call */
 
