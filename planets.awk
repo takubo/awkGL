@@ -5,7 +5,6 @@ BEGIN {
     base_time = 30
 
     orbit = 1
-    fullscreen = 0
 }
 
 /^\w/ {
@@ -43,15 +42,11 @@ function keyboard(key, x, y)
     case " ":
 	orbit = !orbit
 	break
-    case "a":
-	aa ? Enable("LINE_SMOOTH") : Disable("LINE_SMOOTH")
-	aa = !aa
-	break
     case "f":
     case "\r":
     case "\n":
-	fullscreen ? ReshapeWindow(1000, 700) : FullScreen()
-	fullscreen = !fullscreen
+	fullscr ? ReshapeWindow(1000, 700) : FullScreen()
+	fullscr = !fullscr
 	break
     case "q":
     case "\033":

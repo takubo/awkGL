@@ -21,6 +21,10 @@ function keyboard(key, x, y)
     case " ":
 	wire = !wire
 	break
+    case "a":
+	aa ? Enable("LINE_SMOOTH") : Disable("LINE_SMOOTH")
+	aa = !aa
+	break
     case "q":
     case "Q":
     case "\033":
