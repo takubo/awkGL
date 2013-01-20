@@ -10,8 +10,8 @@ BEGIN {
 
 /^\w/ {
     name = $1
-    obj[name]["distance"] = $2 * 100
-    obj[name]["radius"]   = $3
+    obj[name]["distance"] = $2 * 125
+    obj[name]["radius"]   = $3 * 5
     obj[name]["cycle"]    = $4
     obj[name]["red"]      = strtonum("0x" substr($5, 2, 2))
     obj[name]["green"]    = strtonum("0x" substr($5, 4, 2))
@@ -31,7 +31,6 @@ END {
 
     Enable("POINT_SMOOTH")
 
-    #(0-255)   R   G    B
     ClearColor(10, 10, 10)
 
     TimerFunc(base_time, "timer", 0)
@@ -44,13 +43,14 @@ function keyboard(key, x, y)
     case " ":
 	orbit = !orbit
 	break
+    case "a":
+	aa ? Enable("LINE_SMOOTH") : Disable("LINE_SMOOTH")
+	aa = !aa
+	break
     case "f":
     case "\r":
     case "\n":
-	if (!fullscreen)
-	    FullScreen()
-	else
-	    ReshapeWindow(1000, 700)
+	fullscreen ? ReshapeWindow(1000, 700) : FullScreen()
 	fullscreen = !fullscreen
 	break
     case "q":
@@ -82,7 +82,7 @@ function display(    i)
 
     for (i in obj) {
 	if (orbit) {
-	    Color(255.0, 255.0, 255.0)
+	    Color(64.0, 64.0, 64.0)
 	    DrawCircle(obj[i]["distance"], 120, 0)
 	}
 
