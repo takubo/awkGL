@@ -1,7 +1,11 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
+#ifdef HAVE_FREEGLUT
+#include <GL/freeglut.h>
+#else
 #include <GL/glut.h>
+#endif
 #include "awk.h"
 
 int plugin_is_GPL_compatible;
@@ -20,38 +24,42 @@ NODE *Idle_user_func = NULL;
 NODE *Timer_user_func = NULL;
 
 static void set_default_user_func(void);
-//?static NODE* do_GameMode(int);
-static NODE* do_ReshapeFunc(int);
-static NODE* do_Viewport(int);
-static NODE* do_SetWindowPosSize(int);	// Only awkGL
-static NODE* do_SetWindowTitle(int);
-static NODE* do_SetIconTitle(int);
-static NODE* do_ReshapeWindow(int);
-static NODE* do_PositionWindow(int);
-static NODE* do_ShowWindow(int);
-static NODE* do_HideWindow(int);
-static NODE* do_IconifyWindow(int);
-static NODE* do_PushWindow(int);
-static NODE* do_PopWindow(int);
-static NODE* do_FullScreen(int);
-static NODE* do_ClearColor(int);
-static NODE* do_CreateWindow(int);
-static NODE* do_KeyboardFunc(int);
-static NODE* do_KeyboardUpFunc(int);
-static NODE* do_SpecialFunc(int);
-static NODE* do_SpecialUpFunc(int);
-static NODE* do_MouseFunc(int);
-static NODE* do_MotionFunc(int);
-static NODE* do_PassiveMotionFunc(int);
-static NODE* do_GetModifiers(int);
-static NODE* do_EntryFunc(int);
-static NODE* do_DisplayFunc(int);
-static NODE *do_TimerFunc(int);
-static NODE* do_MainLoop(int);
-static NODE* do_PostRedisplay(int);	//?
-static NODE* do_SwapBuffers(int);	//?
-static NODE* do_Enable(int);
-static NODE* do_Disable(int);
+/* static NODE* do_GameMode(int); */
+static NODE * do_ReshapeFunc(int);
+static NODE * do_Viewport(int);
+static NODE * do_SetWindowPosSize(int);	/* Only awkGL */
+static NODE * do_SetWindowTitle(int);
+static NODE * do_SetIconTitle(int);
+static NODE * do_ReshapeWindow(int);
+static NODE * do_PositionWindow(int);
+static NODE * do_ShowWindow(int);
+static NODE * do_HideWindow(int);
+static NODE * do_IconifyWindow(int);
+static NODE * do_PushWindow(int);
+static NODE * do_PopWindow(int);
+static NODE * do_FullScreen(int);
+static NODE * do_FullScreenToggle(int);
+static NODE * do_ClearColor(int);
+static NODE * do_CreateWindow(int);
+static NODE * do_KeyboardFunc(int);
+static NODE * do_KeyboardUpFunc(int);
+static NODE * do_SpecialFunc(int);
+static NODE * do_SpecialUpFunc(int);
+static NODE * do_MouseFunc(int);
+static NODE * do_MotionFunc(int);
+static NODE * do_PassiveMotionFunc(int);
+static NODE * do_GetModifiers(int);
+static NODE * do_EntryFunc(int);
+static NODE * do_DisplayFunc(int);
+static NODE * do_TimerFunc(int);
+static NODE * do_MainLoop(int);
+static NODE * do_MainLoopEvent(int);
+static NODE * do_LeaveMainLoop(int);
+static NODE * do_Exit(int);
+static NODE * do_PostRedisplay(int);
+static NODE * do_SwapBuffers(int);
+static NODE * do_Enable(int);
+static NODE * do_Disable(int);
 GLenum enable_disable(const char *);
 static void AgReshape(int, int);
 static void AgKeyboard(unsigned char, int, int);
@@ -66,37 +74,37 @@ static void AgEntry(int);
 static void AgDisplay(void);
 static void AgTimer(int);
 static AWKNUM callback_user_func(NODE *, NODE *[], int);
-static NODE* user_func(void);
-static NODE* user_func_sub(const char *);
+static NODE * user_func(void);
+static NODE * user_func_sub(const char *);
 void resize(int, int);
-static NODE* do_Begin(int);
-static NODE* do_End(int);
-static NODE* do_Color(int);
-static NODE* do_Vertex2d(int);
-static NODE* do_Vertex3d(int);
-static NODE* do_Ortho(int);
-static NODE* do_Frustum(int);
-static NODE* do_Perspective(int);
-static NODE* do_Lookat(int);
+static NODE * do_Begin(int);
+static NODE * do_End(int);
+static NODE * do_Color(int);
+static NODE * do_Vertex2d(int);
+static NODE * do_Vertex3d(int);
+static NODE * do_Ortho(int);
+static NODE * do_Frustum(int);
+static NODE * do_Perspective(int);
+static NODE * do_Lookat(int);
 
-static NODE* do_LoadIdentity(int);
-static NODE* do_PushMatrix(int);
-static NODE* do_PopMatrix(int);
+static NODE * do_LoadIdentity(int);
+static NODE * do_PushMatrix(int);
+static NODE * do_PopMatrix(int);
 
-static NODE* do_Rotate(int);
-static NODE* do_Transrate(int);
-static NODE* do_Scale(int);
+static NODE * do_Rotate(int);
+static NODE * do_Transrate(int);
+static NODE * do_Scale(int);
 
-static NODE* do_DrawPixels(int);
+static NODE * do_DrawPixels(int);
 static GLenum draw_pixels_format(const char*);
 static GLenum draw_pixels_type(const char*);
 
-static NODE* do_Light(int);
+static NODE * do_Light(int);
 static GLenum light_light_s(const char*);
 static GLenum light_light_n(int);
 static GLenum light_pname(const char*);
-static NODE* do_Normal(int);
-static NODE* do_Material(int);
+static NODE * do_Normal(int);
+static NODE * do_Material(int);
 static GLenum material_face(const char*);
 static GLenum material_pname(const char*);
 
@@ -106,37 +114,37 @@ static NODE* do_PolygonMode(int);
 static GLenum polygon_mode(const char*);
 static NODE* do_LineStipple(int);
 
-static NODE* do_SolidSphere(int);
-static NODE* do_WireSphere(int);
-static NODE* do_SolidCone(int);
-static NODE* do_WireCone(int);
-static NODE* do_SolidCylinder(int);
-static NODE* do_WireCylinder(int);
-static NODE* do_SolidTorus(int);
-static NODE* do_WireTorus(int);
-static NODE* do_SolidCube(int);
-static NODE* do_WireCube(int);
-static NODE* do_SolidTetrahedron(int);
-static NODE* do_WireTetrahedron(int);
-static NODE* do_SolidOctahedron(int);
-static NODE* do_WireOctahedron(int);
-static NODE* do_SolidDodecahedron(int);
-static NODE* do_WireDodecahedron(int);
-static NODE* do_SolidIcosahedron(int);
-static NODE* do_WireIcosahedron(int);
-static NODE* do_SolidTeapot(int);
-static NODE* do_WireTeapot(int);
+static NODE * do_SolidSphere(int);
+static NODE * do_WireSphere(int);
+static NODE * do_SolidCone(int);
+static NODE * do_WireCone(int);
+static NODE * do_SolidCylinder(int);
+static NODE * do_WireCylinder(int);
+static NODE * do_SolidTorus(int);
+static NODE * do_WireTorus(int);
+static NODE * do_SolidCube(int);
+static NODE * do_WireCube(int);
+static NODE * do_SolidTetrahedron(int);
+static NODE * do_WireTetrahedron(int);
+static NODE * do_SolidOctahedron(int);
+static NODE * do_WireOctahedron(int);
+static NODE * do_SolidDodecahedron(int);
+static NODE * do_WireDodecahedron(int);
+static NODE * do_SolidIcosahedron(int);
+static NODE * do_WireIcosahedron(int);
+static NODE * do_SolidTeapot(int);
+static NODE * do_WireTeapot(int);
 
-//static NODE* do_Point(int);		//??
-//static NODE* do_Line(int);		//??
+//static NODE * do_Point(int);		//??
+//static NODE * do_Line(int);		//??
 static NODE * do_DrawCircle(int nargs);
 static NODE * do_DrawAxes(int);
-//static NODE* do_DrawSolidFace(int)	//??
-//static NODE* do_DrawWireFace(int);	//??
+//static NODE * do_DrawSolidFace(int)	//??
+//static NODE * do_DrawWireFace(int);	//??
 
-static NODE* do_pi(int);
-static NODE* do_d2r(int);
-static NODE* do_r2d(int);
+static NODE * do_pi(int);
+static NODE * do_d2r(int);
+static NODE * do_r2d(int);
 
 
 NODE *
@@ -155,7 +163,8 @@ dlload(NODE *tree, void *dl)
 	make_builtin("PushWindow", do_PushWindow, 0);
 	make_builtin("PopWindow", do_PopWindow, 0);
 	make_builtin("FullScreen", do_FullScreen, 0);
-	//make_builtin("GameMode", do_GameMode, 1);
+	make_builtin("FullScreenToggle", do_FullScreenToggle, 0);
+	/* make_builtin("GameMode", do_GameMode, 1); */
 	make_builtin("CreateWindow", do_CreateWindow, 1);
 	make_builtin("KeyboardFunc", do_KeyboardFunc, 1);
 	make_builtin("KeyboardUpFunc", do_KeyboardUpFunc, 1);
@@ -169,6 +178,9 @@ dlload(NODE *tree, void *dl)
 	make_builtin("DisplayFunc", do_DisplayFunc, 1);
 	make_builtin("TimerFunc", do_TimerFunc, 3);
 	make_builtin("MainLoop", do_MainLoop, 0);
+	make_builtin("MainLoopEvent", do_MainLoopEvent, 0);
+	make_builtin("LeaveMainLoop", do_LeaveMainLoop, 0);
+	make_builtin("Exit", do_Exit, 0);
 	make_builtin("PostRedisplay", do_PostRedisplay, 0);
 	make_builtin("glutSwapBuffers", do_SwapBuffers, 0);
 	make_builtin("Enable", do_Enable, 1);
@@ -431,6 +443,16 @@ do_FullScreen(int nargs)
 }
 
 static NODE *
+do_FullScreenToggle(int nargs)
+{
+#ifdef HAVE_FREEGLUT
+	glutFullScreenToggle();
+#endif
+	return make_number((AWKNUM) 0);
+}
+
+/*
+static NODE *
 do_GameMode(int nargs)
 {
 	NODE *tmp;
@@ -444,6 +466,7 @@ do_GameMode(int nargs)
 
 	return make_number((AWKNUM) 0);
 }
+*/
 
 static NODE *
 do_CreateWindow(int nargs)
@@ -706,6 +729,33 @@ do_MainLoop(int nargs)
 }
 
 static NODE *
+do_MainLoopEvent(int nargs)
+{
+#ifdef HAVE_FREEGLUT
+	glutMainLoopEvent();
+#endif
+	return make_number((AWKNUM) 0);
+}
+
+static NODE *
+do_LeaveMainLoop(int nargs)
+{
+#ifdef HAVE_FREEGLUT
+	glutLeaveMainLoop();
+#endif
+	return make_number((AWKNUM) 0);
+}
+
+static NODE *
+do_Exit(int nargs)
+{
+#ifdef HAVE_FREEGLUT
+	glutExit();
+#endif
+	return make_number((AWKNUM) 0);
+}
+
+static NODE *
 do_PostRedisplay(int nargs)
 {
 	glutPostRedisplay();
@@ -746,6 +796,9 @@ GLenum enable_disable(const char *str)
 		para = GL_POINT_SMOOTH;
 	} else if (!strcmp(str, "LINE_SMOOTH")) {
 		para = GL_LINE_SMOOTH;
+	} else {
+		fatal(_("Invalid capabilities"));
+		para = 0; /* suppress warning */
 	}
 
 	return para;
@@ -964,6 +1017,9 @@ AgMouse(int button, int state, int x, int y)
 	case GLUT_DOWN:
 	    stt_str = "down";
 	    break;
+	default:
+	    stt_str = ""; /* suppress warning */
+	    break;
 	}
 
 	//on gawk, not needed terminate with null character
@@ -1139,6 +1195,9 @@ do_Begin(int nargs)
 		type = GL_POLYGON;
 	} else if (!strcmp(str, "TRIANGLE_FAN")) {
 		type = GL_TRIANGLE_FAN;
+	} else {
+		fatal(_("Begin: Invalid mode"));
+		type = 0; /* suppress warning */
 	}
 
 	glBegin(type);
@@ -1201,6 +1260,7 @@ do_Vertex3d(int nargs)
 	return make_number((AWKNUM) 0);
 }
 
+/*
 static NODE *
 do_Point(int nargs)
 {
@@ -1214,6 +1274,7 @@ do_Point(int nargs)
 	glVertex2d(-0.5, 0.5);
 	return make_number((AWKNUM) 0);
 }
+*/
 
 
 static NODE *
@@ -1471,7 +1532,7 @@ do_DrawPixels(int nargs)
 
 	tmp    = (NODE*) get_actual_argument(2, FALSE, FALSE);
 	force_string(tmp);
-	type = draw_pixels_format(tmp->stptr);
+	format = draw_pixels_format(tmp->stptr);
 
 	tmp    = (NODE*) get_actual_argument(3, FALSE, FALSE);
 	force_string(tmp);
@@ -1479,7 +1540,7 @@ do_DrawPixels(int nargs)
 
 	tmp    = (NODE*) get_actual_argument(4, FALSE, FALSE);
 	force_string(tmp);
-	//type = get_draw_pixels(tmp->stptr);
+	pixels = NULL; //get_draw_pixels(tmp->stptr);
 
 	glDrawPixels(width, height, format, type, pixels);
 	return make_number((AWKNUM) 0);
@@ -1653,6 +1714,9 @@ GLenum light_light_n(int num)
 		case 7:
 			light = GL_LIGHT7;
 			break;
+		default:
+			light = num; /* TODO */
+			break;
 	}
 
 	return light;
@@ -1709,6 +1773,9 @@ GLenum light_pname(const char *str)
 		pname = GL_SPOT_CUTOFF;
 	} else if (!strcmp(str, "LINEAR_ATTENUATION")) {
 		pname = GL_LINEAR_ATTENUATION;
+	} else {
+		fatal(_("Invalid light param name"));
+		pname = 0; /* suppress warning */
 	}
 
 	return pname;
@@ -1806,7 +1873,11 @@ GLenum material_face(const char *str)
 		face = GL_FRONT_AND_BACK;
 	} else if (!strcmp(str, "BOTH")) {
 		face = GL_FRONT_AND_BACK;
+	} else {
+		fatal(_("Invalid material face"));
+		face = 0; /* suppress warning */
 	}
+
 	return face;
 }
 
@@ -1848,6 +1919,9 @@ GLenum material_pname(const char *str)
 		pname = GL_AMBIENT_AND_DIFFUSE;
 	} else if (!strcmp(str, "COLOR_INDEXES")) {
 		pname = GL_COLOR_INDEXES;
+	} else {
+		fatal(_("Invalid material name"));
+		pname = 0; /* suppress warning */
 	}
 
 	return pname;
@@ -1907,6 +1981,9 @@ polygon_mode(const char *str)
 		return GL_LINE;
 	} else if (!strcmp(str, "FILL")) {
 		return GL_FILL;
+	} else {
+		fatal(_("Invalid polygon mode."));
+		return 0; /* suppress warning */
 	}
 }
 
@@ -2079,7 +2156,9 @@ do_SolidCylinder(int nargs)
 	tmp    = (NODE*) get_actual_argument(3, FALSE, FALSE);
 	stacks = (GLint) force_number(tmp);
 
+#ifdef HAVE_FREEGLUT
 	glutSolidCylinder(base, height, slices, stacks);
+#endif
 	return make_number((AWKNUM) 0);
 }
 
@@ -2101,7 +2180,9 @@ do_WireCylinder(int nargs)
 	tmp    = (NODE*) get_actual_argument(3, FALSE, FALSE);
 	stacks = (GLint) force_number(tmp);
 
+#ifdef HAVE_FREEGLUT
 	glutWireCylinder(base, height, slices, stacks);
+#endif
 	return make_number((AWKNUM) 0);
 }
 
@@ -2373,6 +2454,7 @@ do_d2r(int nargs)
 		return make_number((AWKNUM) (force_number(tmp) * M_PI / 180));
 	} else {
 		fatal(_("d2r: called with no arguments"));
+		return make_number((AWKNUM) 0); /* suppress warning */
 	}
 }
 
@@ -2389,6 +2471,7 @@ do_r2d(int nargs)
 		return make_number((AWKNUM) (force_number(tmp) * 180 / M_PI));
 	} else {
 		fatal(_("r2d: called with no arguments"));
+		return make_number((AWKNUM) 0); /* suppress warning */
 	}
 }
 

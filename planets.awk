@@ -45,8 +45,7 @@ function keyboard(key, x, y)
     case "f":
     case "\r":
     case "\n":
-	fullscr ? ReshapeWindow(1000, 700) : FullScreen()
-	fullscr = !fullscr
+	FullScreenToggle()
 	break
     case "q":
     case "\033":
