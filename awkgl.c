@@ -775,14 +775,14 @@ static NODE *
 do_Enable(int nargs)
 {
 	NODE *tmp;
-	GLenum para;
+	GLenum cap;
 
 	tmp = (NODE*) get_actual_argument(0, FALSE, FALSE);
 	force_string(tmp);
 	//Todo
-	para = str2cap(tmp->stptr);
+	cap = str2cap(tmp->stptr);
 
-	glEnable(para);
+	glEnable(cap);
 	return make_number((AWKNUM) 0);
 }
 
@@ -790,14 +790,14 @@ static NODE *
 do_Disable(int nargs)
 {
 	NODE *tmp;
-	GLenum para;
+	GLenum cap;
 
 	tmp = (NODE*) get_actual_argument(0, FALSE, FALSE);
 	force_string(tmp);
 	//Todo
-	para = str2cap(tmp->stptr);
+	cap = str2cap(tmp->stptr);
 
-	glDisable(para);
+	glDisable(cap);
 	return make_number((AWKNUM) 0);
 }
 
