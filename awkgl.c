@@ -60,7 +60,7 @@ static NODE * do_PostRedisplay(int);
 static NODE * do_SwapBuffers(int);
 static NODE * do_Enable(int);
 static NODE * do_Disable(int);
-GLenum enable_disable(const char *);
+GLenum str2cap(const char *);
 static void AgReshape(int, int);
 static void AgKeyboard(unsigned char, int, int);
 static void AgKeyboardUp(unsigned char, int, int);
@@ -778,13 +778,28 @@ do_Enable(int nargs)
 	tmp = (NODE*) get_actual_argument(0, FALSE, FALSE);
 	force_string(tmp);
 	//Todo
-	para = enable_disable(tmp->stptr);
+	para = str2cap(tmp->stptr);
 
 	glEnable(para);
 	return make_number((AWKNUM) 0);
 }
 
-GLenum enable_disable(const char *str)
+static NODE *
+do_Disable(int nargs)
+{
+	NODE *tmp;
+	GLenum para;
+
+	tmp = (NODE*) get_actual_argument(0, FALSE, FALSE);
+	force_string(tmp);
+	//Todo
+	para = str2cap(tmp->stptr);
+
+	glDisable(para);
+	return make_number((AWKNUM) 0);
+}
+
+GLenum str2cap(const char *str)
 {
 	GLenum para;
 
@@ -802,21 +817,6 @@ GLenum enable_disable(const char *str)
 	}
 
 	return para;
-}
-
-static NODE *
-do_Disable(int nargs)
-{
-	NODE *tmp;
-	GLenum para;
-
-	tmp = (NODE*) get_actual_argument(0, FALSE, FALSE);
-	force_string(tmp);
-	//Todo
-	para = enable_disable(tmp->stptr);
-
-	glDisable(para);
-	return make_number((AWKNUM) 0);
 }
 
 static NODE *
