@@ -60,6 +60,7 @@ static NODE * do_PostRedisplay(int);
 static NODE * do_SwapBuffers(int);
 static NODE * do_Enable(int);
 static NODE * do_Disable(int);
+static NODE * do_IsEnabled(int);
 GLenum str2cap(const char *);
 static void AgReshape(int, int);
 static void AgKeyboard(unsigned char, int, int);
@@ -185,6 +186,7 @@ dlload(NODE *tree, void *dl)
 	make_builtin("glutSwapBuffers", do_SwapBuffers, 0);
 	make_builtin("Enable", do_Enable, 1);
 	make_builtin("Disable", do_Disable, 1);
+	make_builtin("IsEnabled", do_IsEnabled, 1);
 	make_builtin("ClearColor", do_ClearColor, 3);
 	make_builtin("Begin", do_Begin, 3);
 	make_builtin("End", do_End, 3);
@@ -797,6 +799,19 @@ do_Disable(int nargs)
 
 	glDisable(para);
 	return make_number((AWKNUM) 0);
+}
+
+static NODE *
+do_IsEnabled(int nargs)
+{
+	NODE *tmp;
+	GLenum cap;
+
+	tmp = (NODE *) get_scalar_argument(0, FALSE);
+	force_string(tmp);
+	cap = str2cap(tmp->stptr);
+
+	return make_number((AWKNUM) glIsEnabled(GLenum cap));
 }
 
 GLenum str2cap(const char *str)
