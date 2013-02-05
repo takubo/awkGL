@@ -1,6 +1,6 @@
 # makefile for awkGL
 
-AWK_H_DIR = ../gawk-4.0.1
+AWK_H_DIR = ${HOME}/gawk-4.0.1
 
 CC = gcc
 CFLAGS = -Wall -fPIC -shared -c -O2 -DHAVE_STRING_H -DHAVE_SNPRINTF -DHAVE_STDARG_H -DHAVE_VPRINTF -DDYNAMIC -I${AWK_H_DIR} -DHAVE_FREEGLUT

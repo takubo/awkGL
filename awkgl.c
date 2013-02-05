@@ -38,9 +38,16 @@ static NODE * do_IconifyWindow(int);
 static NODE * do_PushWindow(int);
 static NODE * do_PopWindow(int);
 static NODE * do_FullScreen(int);
+#if 0
+static NODE * do_LeaveFullScreen(int);
+#endif
 static NODE * do_FullScreenToggle(int);
 static NODE * do_ClearColor(int);
 static NODE * do_CreateWindow(int);
+static NODE * do_CreateSubWindow(int);
+static NODE * do_DestroyWindow(int);
+static NODE * do_GetWindow(int);
+static NODE * do_SetWindow(int);
 static NODE * do_KeyboardFunc(int);
 static NODE * do_KeyboardUpFunc(int);
 static NODE * do_SpecialFunc(int);
@@ -57,6 +64,7 @@ static NODE * do_MainLoopEvent(int);
 static NODE * do_LeaveMainLoop(int);
 static NODE * do_Exit(int);
 static NODE * do_PostRedisplay(int);
+static NODE * do_PostWindowRedisplay(int);
 static NODE * do_SwapBuffers(int);
 static NODE * do_Enable(int);
 static NODE * do_Disable(int);
@@ -164,9 +172,16 @@ dlload(NODE *tree, void *dl)
 	make_builtin("PushWindow", do_PushWindow, 0);
 	make_builtin("PopWindow", do_PopWindow, 0);
 	make_builtin("FullScreen", do_FullScreen, 0);
+#if 0
+	make_builtin("LeaveFullScreen", do_LeaveFullScreen, 0);
+#endif
 	make_builtin("FullScreenToggle", do_FullScreenToggle, 0);
 	/* make_builtin("GameMode", do_GameMode, 1); */
 	make_builtin("CreateWindow", do_CreateWindow, 1);
+	make_builtin("CreateWindow", do_CreateSubWindow, 5);
+	make_builtin("DestoyWindow", do_DestroyWindow, 1);
+	make_builtin("GetWindow", do_GetWindow, 0);
+	make_builtin("SetWindow", do_SetWindow, 1);
 	make_builtin("KeyboardFunc", do_KeyboardFunc, 1);
 	make_builtin("KeyboardUpFunc", do_KeyboardUpFunc, 1);
 	make_builtin("SpecialFunc", do_SpecialFunc, 1);
@@ -183,6 +198,7 @@ dlload(NODE *tree, void *dl)
 	make_builtin("LeaveMainLoop", do_LeaveMainLoop, 0);
 	make_builtin("Exit", do_Exit, 0);
 	make_builtin("PostRedisplay", do_PostRedisplay, 0);
+	make_builtin("PostWindowRedisplay", do_PostWindowRedisplay, 1);
 	make_builtin("glutSwapBuffers", do_SwapBuffers, 0);
 	make_builtin("Enable", do_Enable, 1);
 	make_builtin("Disable", do_Disable, 1);
@@ -444,10 +460,21 @@ do_FullScreen(int nargs)
 	return make_number((AWKNUM) 0);
 }
 
+#if 0
+static NODE *
+do_LeaveFullScreen(int nargs)
+{
+#ifdef FREEGLUT
+	glutLeaveFullScreen();
+#endif
+	return make_number((AWKNUM) 0);
+}
+#endif
+
 static NODE *
 do_FullScreenToggle(int nargs)
 {
-#ifdef HAVE_FREEGLUT
+#ifdef FREEGLUT
 	glutFullScreenToggle();
 #endif
 	return make_number((AWKNUM) 0);
@@ -474,14 +501,72 @@ static NODE *
 do_CreateWindow(int nargs)
 {
 	NODE *tmp;
+	int win;
 
 	tmp = (NODE*) get_actual_argument(0, FALSE, FALSE);
 	force_string(tmp);
 
-	glutCreateWindow(tmp->stptr);
+	win = glutCreateWindow(tmp->stptr);
 
 	set_default_user_func();
 
+	return make_number((AWKNUM) win);
+}
+
+static NODE *
+do_CreateSubWindow(int nargs)
+{
+	NODE *tmp;
+	int win, x, y, width, height;
+
+	tmp    = (NODE*) get_scalar_argument(0, FALSE);
+	win   = (int) force_number(tmp);
+
+	tmp    = (NODE*) get_scalar_argument(1, FALSE);
+	x      = (int) force_number(tmp);
+
+	tmp    = (NODE*) get_scalar_argument(2, FALSE);
+	y      = (int) force_number(tmp);
+
+	tmp    = (NODE*) get_scalar_argument(3, FALSE);
+	width  = (int) force_number(tmp);
+
+	tmp    = (NODE*) get_scalar_argument(4, FALSE);
+	height = (int) force_number(tmp);
+
+	return make_number((AWKNUM) glutCreateSubWindow(win, x, y, width, height));
+}
+
+
+static NODE *
+do_DestroyWindow(int nargs)
+{
+	NODE *tmp;
+	int win;
+
+	tmp = (NODE *) get_scalar_argument(0, FALSE);
+	win = (int) force_number(tmp);
+
+	glutDestroyWindow(win);
+	return make_number((AWKNUM) 0);
+}
+
+static NODE *
+do_GetWindow(int nargs)
+{
+	return make_number((AWKNUM) glutGetWindow());
+}
+
+static NODE *
+do_SetWindow(int nargs)
+{
+	NODE *tmp;
+	int win;
+
+	tmp = (NODE *) get_scalar_argument(0, FALSE);
+	win = (int) force_number(tmp);
+
+	glutSetWindow(win);
 	return make_number((AWKNUM) 0);
 }
 
@@ -765,6 +850,19 @@ do_PostRedisplay(int nargs)
 }
 
 static NODE *
+do_PostWindowRedisplay(int nargs)
+{
+	NODE *tmp;
+	int win;
+
+	tmp = (NODE*) get_scalar_argument(0, FALSE);
+	win = (int) force_number(tmp);
+
+	glutPostWindowRedisplay(win);
+	return make_number((AWKNUM) 0);
+}
+
+static NODE *
 do_SwapBuffers(int nargs)
 {
 	glutSwapBuffers();
@@ -811,7 +909,7 @@ do_IsEnabled(int nargs)
 	force_string(tmp);
 	cap = str2cap(tmp->stptr);
 
-	return make_number((AWKNUM) glIsEnabled(GLenum cap));
+	return make_number((AWKNUM) glIsEnabled(cap));
 }
 
 GLenum str2cap(const char *str)
