@@ -178,7 +178,7 @@ dlload(NODE *tree, void *dl)
 	make_builtin("FullScreenToggle", do_FullScreenToggle, 0);
 	/* make_builtin("GameMode", do_GameMode, 1); */
 	make_builtin("CreateWindow", do_CreateWindow, 1);
-	make_builtin("CreateWindow", do_CreateSubWindow, 5);
+	make_builtin("CreateSubWindow", do_CreateSubWindow, 5);
 	make_builtin("DestoyWindow", do_DestroyWindow, 1);
 	make_builtin("GetWindow", do_GetWindow, 0);
 	make_builtin("SetWindow", do_SetWindow, 1);
