@@ -517,10 +517,10 @@ static NODE *
 do_CreateSubWindow(int nargs)
 {
 	NODE *tmp;
-	int win, x, y, width, height;
+	int window, x, y, width, height;
 
 	tmp    = (NODE*) get_scalar_argument(0, FALSE);
-	win   = (int) force_number(tmp);
+	window = (int) force_number(tmp);
 
 	tmp    = (NODE*) get_scalar_argument(1, FALSE);
 	x      = (int) force_number(tmp);
@@ -534,7 +534,7 @@ do_CreateSubWindow(int nargs)
 	tmp    = (NODE*) get_scalar_argument(4, FALSE);
 	height = (int) force_number(tmp);
 
-	return make_number((AWKNUM) glutCreateSubWindow(win, x, y, width, height));
+	return make_number((AWKNUM) glutCreateSubWindow(window, x, y, width, height));
 }
 
 
@@ -542,12 +542,12 @@ static NODE *
 do_DestroyWindow(int nargs)
 {
 	NODE *tmp;
-	int win;
+	int window;
 
-	tmp = (NODE *) get_scalar_argument(0, FALSE);
-	win = (int) force_number(tmp);
+	tmp    = (NODE *) get_scalar_argument(0, FALSE);
+	window = (int) force_number(tmp);
 
-	glutDestroyWindow(win);
+	glutDestroyWindow(window);
 	return make_number((AWKNUM) 0);
 }
 
@@ -561,12 +561,12 @@ static NODE *
 do_SetWindow(int nargs)
 {
 	NODE *tmp;
-	int win;
+	int window;
 
-	tmp = (NODE *) get_scalar_argument(0, FALSE);
-	win = (int) force_number(tmp);
+	tmp    = (NODE *) get_scalar_argument(0, FALSE);
+	window = (int) force_number(tmp);
 
-	glutSetWindow(win);
+	glutSetWindow(window);
 	return make_number((AWKNUM) 0);
 }
 
@@ -853,12 +853,12 @@ static NODE *
 do_PostWindowRedisplay(int nargs)
 {
 	NODE *tmp;
-	int win;
+	int window;
 
-	tmp = (NODE*) get_scalar_argument(0, FALSE);
-	win = (int) force_number(tmp);
+	tmp    = (NODE*) get_scalar_argument(0, FALSE);
+	window = (int) force_number(tmp);
 
-	glutPostWindowRedisplay(win);
+	glutPostWindowRedisplay(window );
 	return make_number((AWKNUM) 0);
 }
 
