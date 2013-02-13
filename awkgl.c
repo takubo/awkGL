@@ -108,6 +108,8 @@ static NODE * do_DrawPixels(int);
 static GLenum draw_pixels_format(const char*);
 static GLenum draw_pixels_type(const char*);
 
+static NODE *do_PolygonOffset(int);
+
 static NODE * do_Light(int);
 static GLenum light_light_s(const char*);
 static GLenum light_light_n(int);
@@ -225,6 +227,8 @@ dlload(NODE *tree, void *dl)
 	make_builtin("Scale", do_Scale, 4);
 
 	make_builtin("DrawPixels", do_DrawPixels, 5);
+
+	make_builtin("PolygonOffset", do_PolygonOffset, 2);
 
 	make_builtin("Light", do_Light, 9);
 	make_builtin("Normal", do_Normal, 3);
@@ -1724,6 +1728,22 @@ draw_pixels_type(const char *str)
 	}
 
 	return type;
+}
+
+static NODE *
+do_PolygonOffset(int nargs)
+{
+	NODE *tmp;
+	GLfloat factor;
+	GLfloat units;
+
+	tmp    = (NODE *) get_scalar_argument(0, FALSE);
+	factor = (GLfloat) force_number(tmp);
+	tmp    = (NODE *) get_scalar_argument(1, FALSE);
+	units  = (GLfloat) force_number(tmp);
+
+	glPolygonOffset(factor, units);
+	return make_number((AWKNUM) 0);
 }
 
 // 光源
