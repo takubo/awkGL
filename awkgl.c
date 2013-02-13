@@ -22,6 +22,11 @@ NODE *Entry_user_func = NULL;
 NODE *Display_user_func = NULL;
 NODE *Idle_user_func = NULL;
 NODE *Timer_user_func = NULL;
+#ifdef HAVE_FREEGLUT
+NODE *MouseWheel_user_func = NULL;
+NODE *Close_user_func = NULL;
+NODE *WMClose_user_func = NULL;
+#endif
 
 static void set_default_user_func(void);
 /* static NODE* do_GameMode(int); */
@@ -58,6 +63,11 @@ static NODE * do_PassiveMotionFunc(int);
 static NODE * do_GetModifiers(int);
 static NODE * do_EntryFunc(int);
 static NODE * do_DisplayFunc(int);
+#ifdef HAVE_FREEGLUT
+static NODE *do_MouseWheelFunc(int);
+static NODE *do_CloseFunc(int);
+static NODE *do_WMCloseFunc(int);
+#endif
 static NODE * do_TimerFunc(int);
 static NODE * do_MainLoop(int);
 static NODE * do_MainLoopEvent(int);
@@ -71,6 +81,7 @@ static NODE * do_Disable(int);
 static NODE * do_IsEnabled(int);
 GLenum str2cap(const char *);
 static void AgReshape(int, int);
+static void AgIdle(void);
 static void AgKeyboard(unsigned char, int, int);
 static void AgKeyboardUp(unsigned char, int, int);
 static void AgSpecial(int, int, int);
@@ -81,7 +92,13 @@ static void AgMotion(int, int);
 static void AgPassiveMotion(int, int);
 static void AgEntry(int);
 static void AgDisplay(void);
+#ifdef HAVE_FREEGLUT
+static void AgMouseWheel(int, int, int, int);
+static void AgClose(void);
+static void AgWMClose(void);
+#endif
 static void AgTimer(int);
+
 static AWKNUM callback_user_func(NODE *, NODE *[], int);
 static NODE * user_func(void);
 static NODE * user_func_sub(const char *);
@@ -96,9 +113,11 @@ static NODE * do_Frustum(int);
 static NODE * do_Perspective(int);
 static NODE * do_Lookat(int);
 
+static NODE * do_MatrixMode(int);
 static NODE * do_LoadIdentity(int);
 static NODE * do_PushMatrix(int);
 static NODE * do_PopMatrix(int);
+static NODE * do_MultMatrix(int);
 
 static NODE * do_Rotate(int);
 static NODE * do_Transrate(int);
@@ -192,6 +211,11 @@ dlload(NODE *tree, void *dl)
 	make_builtin("GetModifiers", do_GetModifiers, 0);
 	make_builtin("EntryFunc", do_EntryFunc, 1);
 	make_builtin("DisplayFunc", do_DisplayFunc, 1);
+#ifdef HAVE_FREEGLUT
+	make_builtin("MouseWheel", do_MouseWheelFunc, 1);
+	make_builtin("Close", do_CloseFunc, 1);
+	make_builtin("WMClose", do_WMCloseFunc, 1);
+#endif
 	make_builtin("TimerFunc", do_TimerFunc, 3);
 	make_builtin("MainLoop", do_MainLoop, 0);
 	make_builtin("MainLoopEvent", do_MainLoopEvent, 0);
@@ -199,7 +223,7 @@ dlload(NODE *tree, void *dl)
 	make_builtin("Exit", do_Exit, 0);
 	make_builtin("PostRedisplay", do_PostRedisplay, 0);
 	make_builtin("PostWindowRedisplay", do_PostWindowRedisplay, 1);
-	make_builtin("glutSwapBuffers", do_SwapBuffers, 0);
+	make_builtin("SwapBuffers", do_SwapBuffers, 0);
 	make_builtin("Enable", do_Enable, 1);
 	make_builtin("Disable", do_Disable, 1);
 	make_builtin("IsEnabled", do_IsEnabled, 1);
@@ -216,9 +240,11 @@ dlload(NODE *tree, void *dl)
 	make_builtin("Perspective", do_Perspective, 4);
 	make_builtin("LookAt", do_Lookat, 9);
 
+	make_builtin("MatrixMode", do_MatrixMode, 1);
 	make_builtin("LoadIdentity", do_LoadIdentity, 1);
 	make_builtin("PushMatrix", do_PushMatrix, 1);
 	make_builtin("PopMatrix", do_PopMatrix, 1);
+	make_builtin("MultMatrix", do_MultMatrix, 16);//TODO
 
 	make_builtin("Rotate", do_Rotate, 4);
 	make_builtin("Translate", do_Transrate, 4);
@@ -274,10 +300,23 @@ dlload(NODE *tree, void *dl)
 	return make_number((AWKNUM) 0);
 }
 
+void Idle()
+{
+	glutPostRedisplay();
+}
+
 static void
 set_default_user_func()
 {
 	NODE *fnc_ptr;
+
+	fnc_ptr = user_func_sub("idle");
+	if (fnc_ptr != NULL) {
+		Idle_user_func = fnc_ptr;
+		glutIdleFunc(AgIdle);
+	} else {
+		glutIdleFunc(Idle);
+	}
 
 	fnc_ptr = user_func_sub("reshape");
 	if (fnc_ptr != NULL) {
@@ -332,6 +371,26 @@ set_default_user_func()
 		Entry_user_func = fnc_ptr;
 		glutEntryFunc(AgEntry);
 	}
+
+#ifdef HAVE_FREEGLUT
+	fnc_ptr = user_func_sub("MouseWheel");
+	if (fnc_ptr != NULL) {
+		MouseWheel_user_func = fnc_ptr;
+		glutMouseWheelFunc(AgMouseWheel);
+	}
+
+	fnc_ptr = user_func_sub("Close");
+	if (fnc_ptr != NULL) {
+		Close_user_func = fnc_ptr;
+		glutCloseFunc(AgClose);
+	}
+
+	fnc_ptr = user_func_sub("WMClose");
+	if (fnc_ptr != NULL) {
+		WMClose_user_func = fnc_ptr;
+		glutWMCloseFunc(AgWMClose);
+	}
+#endif
 
 	return;
 }
@@ -464,7 +523,7 @@ do_FullScreen(int nargs)
 static NODE *
 do_LeaveFullScreen(int nargs)
 {
-#ifdef FREEGLUT
+#ifdef HAVE_FREEGLUT
 	glutLeaveFullScreen();
 #endif
 	return make_number((AWKNUM) 0);
@@ -474,7 +533,7 @@ do_LeaveFullScreen(int nargs)
 static NODE *
 do_FullScreenToggle(int nargs)
 {
-#ifdef FREEGLUT
+#ifdef HAVE_FREEGLUT
 	glutFullScreenToggle();
 #endif
 	return make_number((AWKNUM) 0);
@@ -719,6 +778,38 @@ do_DisplayFunc(int nargs)
 	return make_number((AWKNUM) 0);
 }
 
+#ifdef HAVE_FREEGLUT
+static NODE *
+do_MouseWheelFunc(int nargs)
+{
+	NODE *func_ptr = user_func();
+	MouseWheel_user_func = func_ptr;
+
+	glutMouseWheelFunc(AgMouseWheel);
+	return make_number((AWKNUM) 0);
+}
+
+static NODE *
+do_CloseFunc(int nargs)
+{
+	NODE *func_ptr = user_func();
+	Close_user_func = func_ptr;
+
+	glutCloseFunc(AgClose);
+	return make_number((AWKNUM) 0);
+}
+
+static NODE *
+do_WMCloseFunc(int nargs)
+{
+	NODE *func_ptr = user_func();
+	WMClose_user_func = func_ptr;
+
+	glutWMCloseFunc(AgWMClose);
+	return make_number((AWKNUM) 0);
+}
+#endif
+
 //void glutTimerFunc(unsigned int msecs, void (*func)(int value), value);
 static NODE *
 do_TimerFunc(int nargs)
@@ -775,18 +866,13 @@ user_func_sub(const char * fnc_name)
 	return fnc_ptr;
 }
 
-void Idle()
-{
-	glutPostRedisplay();
-}
-
 static NODE *
 do_MainLoop(int nargs)
 {
 	//glutKeyboardFunc(AgKeyboard);
 	//glutDisplayFunc(AgDisplay);
 	//glutReshapeFunc(AgReshape);
-	glutIdleFunc(Idle);
+	//glutIdleFunc(Idle);
 	//glEnable(GL_POINT_SMOOTH);
 	//glEnable(GL_LINE_SMOOTH);
 	//glEnable(GL_POLYGON_SMOOTH);
@@ -1218,6 +1304,49 @@ AgDisplay(void)
 	glutSwapBuffers();
 }
 
+#ifdef HAVE_FREEGLUT
+static void
+AgMouseWheel(int wheel, int direction, int x, int y)
+{
+	NODE *args[5];
+
+	args[0] = make_number((AWKNUM) wheel);
+	args[1] = make_number((AWKNUM) direction);
+	args[2] = make_number((AWKNUM) x);
+	args[3] = make_number((AWKNUM) y);
+	args[4] = NULL;
+
+	callback_user_func(MouseWheel_user_func, args, 4);
+
+	glutPostRedisplay();
+	return;
+}
+
+static void
+AgClose(void)
+{
+	NODE *args[1];
+
+	args[0] = NULL;
+
+	callback_user_func(Close_user_func, args, 0);
+
+	return;
+}
+
+static void
+AgWMClose(void)
+{
+	NODE *args[1];
+
+	args[0] = NULL;
+
+	callback_user_func(WMClose_user_func, args, 0);
+
+	return;
+}
+#endif
+
 static void AgTimer(int value)
 {
 	NODE *args[2];
@@ -1269,7 +1398,8 @@ callback_user_func(NODE *func_ptr, NODE *args[], int argc)
 	return (ret < 0.0) ? -1 : (ret > 0.0);
 }
 
-static void AgReshape(int w, int h)
+static void
+AgReshape(int w, int h)
 {
 	NODE *args[3];
 
@@ -1278,6 +1408,17 @@ static void AgReshape(int w, int h)
 	args[2] = NULL;
 
 	callback_user_func(Reshape_user_func, args, 2);
+	return;
+}
+
+static void
+AgIdle(void)
+{
+	NODE *args[1];
+
+	args[0] = NULL;
+
+	callback_user_func(Idle_user_func, args, 0);
 	return;
 }
 
@@ -1483,8 +1624,8 @@ do_Perspective(int nargs)
 	tmp     = (NODE*) get_actual_argument(3, FALSE, FALSE);
 	back    = (GLdouble) (force_number(tmp));
 
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
+	//?glMatrixMode(GL_PROJECTION);
+	//?glLoadIdentity();
 	gluPerspective(angle, aspect, front, back);
 	return make_number((AWKNUM) 0);
 }
@@ -1532,12 +1673,39 @@ do_Lookat(int nargs)
 	upZ     = (GLdouble) (force_number(tmp));
 
 	gluLookAt(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ);
-	glMatrixMode( GL_MODELVIEW );
-	glLoadIdentity();
+	//?glMatrixMode( GL_MODELVIEW );
+	//?glLoadIdentity();
 	return make_number((AWKNUM) 0);
 }
 
 // 回転、移動、サイズ変更
+
+static NODE *
+do_MatrixMode(int nargs)
+{
+	NODE *tmp;
+	GLenum mode;
+
+	if (do_lint && get_curfunc_arg_count() > 1)
+		lintwarn("MatrixMode: called with too many arguments");
+
+	tmp = (NODE *) get_scalar_argument(0, FALSE);
+	force_string(tmp);
+
+	if (!strcmp(tmp->stptr, "MODELVIEW")) {
+		/* モデルビュー行列 */
+		mode = GL_MODELVIEW;
+	} else if (!strcmp(tmp->stptr, "PROJECTION")) {
+		/* 射影行列 */
+		mode = GL_PROJECTION;
+	} else if (!strcmp(tmp->stptr, "TEXTURE")) {
+		/* テクスチャ行列 */
+		mode = GL_TEXTURE;
+	}
+
+	glMatrixMode(mode);
+	return make_number((AWKNUM) 0);
+}
 
 static NODE *
 do_LoadIdentity(int nargs)
@@ -1566,6 +1734,22 @@ do_PopMatrix(int nargs)
 		lintwarn("PopMatrix: called with too many arguments");
 
 	glPopMatrix();
+	return make_number((AWKNUM) 0);
+}
+
+static NODE *
+do_MultMatrix(int nargs)
+{
+	NODE *tmp;
+	int i;
+	GLdouble m[16];
+
+	for (i = 0; i < 16; i++) {
+		tmp  = (NODE *) get_actual_argument(i, FALSE, FALSE);
+		m[i] = (GLdouble) force_number(tmp);
+	}
+
+	glMultMatrixd(m);
 	return make_number((AWKNUM) 0);
 }
 
@@ -2628,14 +2812,19 @@ static NODE *
 do_DrawAxes(int nargs)
 {
 	NODE *tmp;
+	GLboolean lighting;
 	GLdouble len;
 
 	tmp = (NODE*) get_actual_argument(0, FALSE, FALSE);
 	len = (GLdouble) force_number(tmp);
-//TODO Lighting
-	//glPushMatrix();
-	//glLoadIdentity();
-	//glLineWidth(2.0);
+
+	if (glIsEnabled(GL_LIGHTING)) {
+	    lighting = GL_TRUE;
+	    glDisable(GL_LIGHTING);
+	} else {
+	    lighting = GL_FALSE;
+	}
+
 	glBegin(GL_LINES);
 	glColor3d(1,0,0);	// X axis is red.
 	glVertex3d(0, 0, 0);
@@ -2647,7 +2836,10 @@ do_DrawAxes(int nargs)
 	glVertex3d(0, 0, 0);
 	glVertex3d(0, 0, len);
 	glEnd();
-	//glPopMatrix();
+
+	if (lighting) {
+	    glEnable(GL_LIGHTING);
+	}
 
 	return make_number((AWKNUM) 0);
 }
