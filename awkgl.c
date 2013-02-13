@@ -928,6 +928,14 @@ GLenum str2cap(const char *str)
 		para = GL_POINT_SMOOTH;
 	} else if (!strcmp(str, "LINE_SMOOTH")) {
 		para = GL_LINE_SMOOTH;
+	} else if (!strcmp(str, "POLYGON_OFFSET_FILL")) {
+		para = GL_POLYGON_OFFSET_FILL;
+	} else if (!strcmp(str, "POLYGON_OFFSET_LINE")) {
+		para = GL_POLYGON_OFFSET_LINE;
+	} else if (!strcmp(str, "POLYGON_OFFSET_POINT")) {
+		para = GL_POLYGON_OFFSET_POINT;
+	}
+
 	} else {
 		fatal(_("Invalid capabilities"));
 		para = 0; /* suppress warning */
