@@ -10,6 +10,11 @@
 
 int plugin_is_GPL_compatible;
 
+#define skip_str(ptr, string)	\
+	if (!strncmp(ptr, string, sizeof(string))) {\
+		ptr += sizeof(string)\
+	}
+	
 NODE *Reshape_user_func = NULL;
 NODE *Keyboard_user_func = NULL;
 NODE *KeyboardUp_user_func = NULL;
@@ -126,6 +131,10 @@ static NODE * do_Scale(int);
 static NODE * do_DrawPixels(int);
 static GLenum draw_pixels_format(const char*);
 static GLenum draw_pixels_type(const char*);
+
+static NODE *do_PolygonOffset(int);
+static NODE *do_FrontFace(int);
+static NODE *do_CullFace(int);
 
 static NODE * do_Light(int);
 static GLenum light_light_s(const char*);
@@ -251,6 +260,10 @@ dlload(NODE *tree, void *dl)
 	make_builtin("Scale", do_Scale, 4);
 
 	make_builtin("DrawPixels", do_DrawPixels, 5);
+
+	make_builtin("PolygonOffset", do_PolygonOffset, 2);
+	make_builtin("FrontFace", do_FrontFace, 1);
+	make_builtin("CullFace", do_CullFace, 1);
 
 	make_builtin("Light", do_Light, 9);
 	make_builtin("Normal", do_Normal, 3);
@@ -576,10 +589,10 @@ static NODE *
 do_CreateSubWindow(int nargs)
 {
 	NODE *tmp;
-	int win, x, y, width, height;
+	int window, x, y, width, height;
 
 	tmp    = (NODE*) get_scalar_argument(0, FALSE);
-	win   = (int) force_number(tmp);
+	window = (int) force_number(tmp);
 
 	tmp    = (NODE*) get_scalar_argument(1, FALSE);
 	x      = (int) force_number(tmp);
@@ -593,7 +606,7 @@ do_CreateSubWindow(int nargs)
 	tmp    = (NODE*) get_scalar_argument(4, FALSE);
 	height = (int) force_number(tmp);
 
-	return make_number((AWKNUM) glutCreateSubWindow(win, x, y, width, height));
+	return make_number((AWKNUM) glutCreateSubWindow(window, x, y, width, height));
 }
 
 
@@ -601,12 +614,12 @@ static NODE *
 do_DestroyWindow(int nargs)
 {
 	NODE *tmp;
-	int win;
+	int window;
 
-	tmp = (NODE *) get_scalar_argument(0, FALSE);
-	win = (int) force_number(tmp);
+	tmp    = (NODE *) get_scalar_argument(0, FALSE);
+	window = (int) force_number(tmp);
 
-	glutDestroyWindow(win);
+	glutDestroyWindow(window);
 	return make_number((AWKNUM) 0);
 }
 
@@ -620,12 +633,12 @@ static NODE *
 do_SetWindow(int nargs)
 {
 	NODE *tmp;
-	int win;
+	int window;
 
-	tmp = (NODE *) get_scalar_argument(0, FALSE);
-	win = (int) force_number(tmp);
+	tmp    = (NODE *) get_scalar_argument(0, FALSE);
+	window = (int) force_number(tmp);
 
-	glutSetWindow(win);
+	glutSetWindow(window);
 	return make_number((AWKNUM) 0);
 }
 
@@ -939,12 +952,12 @@ static NODE *
 do_PostWindowRedisplay(int nargs)
 {
 	NODE *tmp;
-	int win;
+	int window;
 
-	tmp = (NODE*) get_scalar_argument(0, FALSE);
-	win = (int) force_number(tmp);
+	tmp    = (NODE*) get_scalar_argument(0, FALSE);
+	window = (int) force_number(tmp);
 
-	glutPostWindowRedisplay(win);
+	glutPostWindowRedisplay(window );
 	return make_number((AWKNUM) 0);
 }
 
@@ -1010,6 +1023,14 @@ GLenum str2cap(const char *str)
 		para = GL_POINT_SMOOTH;
 	} else if (!strcmp(str, "LINE_SMOOTH")) {
 		para = GL_LINE_SMOOTH;
+	} else if (!strcmp(str, "POLYGON_OFFSET_FILL")) {
+		para = GL_POLYGON_OFFSET_FILL;
+	} else if (!strcmp(str, "POLYGON_OFFSET_LINE")) {
+		para = GL_POLYGON_OFFSET_LINE;
+	} else if (!strcmp(str, "POLYGON_OFFSET_POINT")) {
+		para = GL_POLYGON_OFFSET_POINT;
+	} else if (!strcmp(str, "CULL_FACE")) {
+		para = GL_CULL_FACE;
 	} else {
 		fatal(_("Invalid capabilities"));
 		para = 0; /* suppress warning */
@@ -1908,6 +1929,59 @@ draw_pixels_type(const char *str)
 	}
 
 	return type;
+}
+
+static NODE *
+do_PolygonOffset(int nargs)
+{
+	NODE *tmp;
+	GLfloat factor;
+	GLfloat units;
+
+	tmp    = (NODE *) get_scalar_argument(0, FALSE);
+	factor = (GLfloat) force_number(tmp);
+	tmp    = (NODE *) get_scalar_argument(1, FALSE);
+	units  = (GLfloat) force_number(tmp);
+
+	glPolygonOffset(factor, units);
+	return make_number((AWKNUM) 0);
+}
+static NODE *
+do_FrontFace(int nargs)
+{
+	NODE *tmp;
+	GLenum mode;
+
+	tmp = (NODE *) get_scalar_argument(0, FALSE);
+	force_string(tmp);
+
+	skip_str(str, "GL_");
+
+	if (!strcmp(str, "CCW")) {
+		mode = GL_CCW;
+	} else if (!strcmp(str, "CW")) {
+		mode = GL_CW;
+	} else {
+		fatal(_("FrontFace(): Invalid mode."));
+		mode = 0; /* suppress warning */
+	}
+
+	glFrontFace(mode);
+	return make_number((AWKNUM) 0);
+}
+
+static NODE *
+do_CullFace(int nargs)
+{
+	NODE *tmp;
+	GLenum face;
+
+	tmp = (NODE *) get_scalar_argument(0, FALSE);
+	force_string(tmp);
+	face = material_face(tmp->stptr);
+
+	glCullFace (GLenum mode);
+	return make_number((AWKNUM) 0);
 }
 
 // 光源
