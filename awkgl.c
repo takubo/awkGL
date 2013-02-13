@@ -10,6 +10,11 @@
 
 int plugin_is_GPL_compatible;
 
+#define skip_str(ptr, string)	\
+	if (!strncmp(ptr, string, sizeof(string))) {\
+		ptr += sizeof(string)\
+	}
+	
 NODE *Reshape_user_func = NULL;
 NODE *Keyboard_user_func = NULL;
 NODE *KeyboardUp_user_func = NULL;
@@ -109,6 +114,8 @@ static GLenum draw_pixels_format(const char*);
 static GLenum draw_pixels_type(const char*);
 
 static NODE *do_PolygonOffset(int);
+static NODE *do_FrontFace(int);
+static NODE *do_CullFace(int);
 
 static NODE * do_Light(int);
 static GLenum light_light_s(const char*);
@@ -229,6 +236,8 @@ dlload(NODE *tree, void *dl)
 	make_builtin("DrawPixels", do_DrawPixels, 5);
 
 	make_builtin("PolygonOffset", do_PolygonOffset, 2);
+	make_builtin("FrontFace", do_FrontFace, 1);
+	make_builtin("CullFace", do_CullFace, 1);
 
 	make_builtin("Light", do_Light, 9);
 	make_builtin("Normal", do_Normal, 3);
@@ -934,8 +943,8 @@ GLenum str2cap(const char *str)
 		para = GL_POLYGON_OFFSET_LINE;
 	} else if (!strcmp(str, "POLYGON_OFFSET_POINT")) {
 		para = GL_POLYGON_OFFSET_POINT;
-	}
-
+	} else if (!strcmp(str, "CULL_FACE")) {
+		para = GL_CULL_FACE;
 	} else {
 		fatal(_("Invalid capabilities"));
 		para = 0; /* suppress warning */
@@ -1751,6 +1760,43 @@ do_PolygonOffset(int nargs)
 	units  = (GLfloat) force_number(tmp);
 
 	glPolygonOffset(factor, units);
+	return make_number((AWKNUM) 0);
+}
+static NODE *
+do_FrontFace(int nargs)
+{
+	NODE *tmp;
+	GLenum mode;
+
+	tmp = (NODE *) get_scalar_argument(0, FALSE);
+	force_string(tmp);
+
+	skip_str(str, "GL_");
+
+	if (!strcmp(str, "CCW")) {
+		mode = GL_CCW;
+	} else if (!strcmp(str, "CW")) {
+		mode = GL_CW;
+	} else {
+		fatal(_("FrontFace(): Invalid mode."));
+		mode = 0; /* suppress warning */
+	}
+
+	glFrontFace(mode);
+	return make_number((AWKNUM) 0);
+}
+
+static NODE *
+do_CullFace(int nargs)
+{
+	NODE *tmp;
+	GLenum face;
+
+	tmp = (NODE *) get_scalar_argument(0, FALSE);
+	force_string(tmp);
+	face = material_face(tmp->stptr);
+
+	glCullFace (GLenum mode);
 	return make_number((AWKNUM) 0);
 }
 
