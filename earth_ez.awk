@@ -31,11 +31,11 @@ function keyboard(key, x, y)
 function reshape(width, height)
 {
     Viewport(0, 0, width, height)
-    #MatrixMode(GL_PROJECTION)
-    #LoadIdentity()
+    MatrixMode("PROJECTION")
+    LoadIdentity()
     Perspective(45, width/ height , 1, 2000)
     LookAt(-70.0, 280.0, 70.0,	0.0, 0.0, 0.0,	0.0, 0.0, 1.0)
-    #MatrixMode( GL_MODELVIEW )
+    MatrixMode("MODELVIEW")
     LoadIdentity()
 }
 

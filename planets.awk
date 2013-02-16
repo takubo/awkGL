@@ -58,8 +58,12 @@ function keyboard(key, x, y)
 function reshape(width, height)
 {
     Viewport(0, 0, width, height)
+    MatrixMode("PROJECTION")
+    LoadIdentity()
     Perspective(45, width/ height , 1, 2000)
     LookAt(-70.0, 280.0, 80.0,	0.0, 0.0, 0.0,	0.0, 0.0, 1.0)
+    MatrixMode("MODELVIEW")
+    LoadIdentity()
 }
 
 function timer(val,    i)
