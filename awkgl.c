@@ -12,7 +12,7 @@ int plugin_is_GPL_compatible;
 
 #define skip_str(ptr, string)	\
 	if (!strncmp(ptr, string, sizeof(string))) {\
-		ptr += sizeof(string)\
+		ptr += sizeof(string);\
 	}
 	
 NODE *Reshape_user_func = NULL;
@@ -1950,10 +1950,13 @@ static NODE *
 do_FrontFace(int nargs)
 {
 	NODE *tmp;
+	const char *str;
 	GLenum mode;
 
 	tmp = (NODE *) get_scalar_argument(0, FALSE);
 	force_string(tmp);
+
+	str = tmp->stptr;
 
 	skip_str(str, "GL_");
 
@@ -1974,13 +1977,13 @@ static NODE *
 do_CullFace(int nargs)
 {
 	NODE *tmp;
-	GLenum face;
+	GLenum mode;
 
 	tmp = (NODE *) get_scalar_argument(0, FALSE);
 	force_string(tmp);
-	face = material_face(tmp->stptr);
+	mode = material_face(tmp->stptr);
 
-	glCullFace (GLenum mode);
+	glCullFace(mode);
 	return make_number((AWKNUM) 0);
 }
 
@@ -2874,7 +2877,8 @@ do_DrawCircle(int nargs)
 	} else {
 		glBegin(GL_LINE_LOOP);
 	}
-	for (i = 0; i <= slices; i++) {
+	/* CCW is FONT */
+	for (i = slices; i >= 0; i--) {
 		glVertex2d(radius * cos(i * a), radius * sin(i * a));
 	}
 	glEnd();
