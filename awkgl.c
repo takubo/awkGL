@@ -13,6 +13,8 @@ NODE *
 dlload(NODE *tree, void *dl)
 {
 /* bitmap.c */
+	make_builtin("RasterPos", do_RasterPos, 3);
+	make_builtin("PixelZoom", do_PixelZoom, 2);
 	make_builtin("DrawPixels", do_DrawPixels, 5);
 
 /* device.c */
@@ -54,6 +56,22 @@ dlload(NODE *tree, void *dl)
 	// make_builtin("Line", do_Line, 3);
 	make_builtin("DrawCircle", do_DrawCircle, 3);
 	make_builtin("DrawAxes", do_DrawAxes, 1);
+
+/* font.c */
+	make_builtin("BitmapCharacter", do_BitmapCharacter, 2);
+	make_builtin("BitmapWidth", do_BitmapWidth, 2);
+	make_builtin("BitmapLength", do_BitmapLength, 2);
+#if FREEGLUT
+	make_builtin("BitmapHeight", do_BitmapHeight, 1);
+	make_builtin("BitmapString", do_BitmapString, 2);
+#endif
+	make_builtin("StrokeCharacter", do_StrokeCharacter, 2);
+	make_builtin("StrokeWidth", do_StrokeWidth, 2);
+	make_builtin("StrokeLength", do_StrokeLength, 2);
+#if FREEGLUT
+	make_builtin("StrokeHeight", do_StrokeHeight, 1);
+	make_builtin("StrokeString", do_StrokeString, 2);
+#endif
 
 /* loop.c */
 	make_builtin("MainLoop", do_MainLoop, 0);
@@ -105,6 +123,19 @@ dlload(NODE *tree, void *dl)
 	make_builtin("deg2rad", do_d2r, 1);
 	make_builtin("rad2deg", do_r2d, 1);
 
+/* veiw.c */
+	make_builtin("Viewport", do_Viewport, 4);
+	make_builtin("Ortho", do_Ortho, 6);
+	make_builtin("Frustum", do_Frustum, 6);
+	make_builtin("Perspective", do_Perspective, 4);
+	make_builtin("LookAt", do_Lookat, 9);
+
+/* vertex.c */
+	make_builtin("Begin", do_Begin, 3);
+	make_builtin("End", do_End, 3);
+	make_builtin("Vertex2d", do_Vertex2d, 2);
+	make_builtin("Vertex3d", do_Vertex3d, 3);
+
 /* window.c */
 	make_builtin("CreateWindow", do_CreateWindow, 1);
 	make_builtin("CreateSubWindow", do_CreateSubWindow, 5);
@@ -132,19 +163,6 @@ dlload(NODE *tree, void *dl)
 	make_builtin("FullScreenToggle", do_FullScreenToggle, 0);
 	// make_builtin("GameMode", do_GameMode, 1);
 	make_builtin("ReshapeFunc", do_ReshapeFunc, 4);
-
-/* veiw.c */
-	make_builtin("Viewport", do_Viewport, 4);
-	make_builtin("Ortho", do_Ortho, 6);
-	make_builtin("Frustum", do_Frustum, 6);
-	make_builtin("Perspective", do_Perspective, 4);
-	make_builtin("LookAt", do_Lookat, 9);
-
-/* vertex.c */
-	make_builtin("Begin", do_Begin, 3);
-	make_builtin("End", do_End, 3);
-	make_builtin("Vertex2d", do_Vertex2d, 2);
-	make_builtin("Vertex3d", do_Vertex3d, 3);
 
 	int argc=0; char *argv[1]; glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);

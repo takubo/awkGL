@@ -41,6 +41,8 @@ extern NODE *WMClose_user_func;
 #endif
 
 /* bitmap.c */
+extern NODE *do_RasterPos(int);
+extern NODE *do_PixelZoom(int);
 extern NODE *do_DrawPixels(int);
 
 /* device.c */
@@ -67,20 +69,6 @@ extern void AgPassiveMotion(int, int);
 extern void AgMouseWheel(int, int, int, int);
 #endif
 extern void AgEntry(int);
-
-/* device.c */
-extern NODE *do_MainLoop(int);
-extern NODE *do_MainLoopEvent(int);
-extern NODE *do_LeaveMainLoop(int);
-extern NODE *do_Exit(int);
-extern NODE *do_DisplayFunc(int);
-extern NODE *do_IdleFunc(int);
-extern NODE *do_TimerFunc(int);
-extern NODE *do_PostRedisplay(int);
-extern NODE *do_PostWindowRedisplay(int);
-extern void AgDisplay(void);
-extern void AgIdle(void);
-extern void AgTimer(int);
 
 /* draw_geometry.c */
 extern NODE *do_SolidSphere(int);
@@ -110,6 +98,36 @@ extern NODE *do_DrawAxes(int);
 //extern NODE *do_DrawSolidFace(int);
 //extern NODE *do_DrawWireFace(int);
 
+/* font.c */
+extern NODE *do_BitmapCharacter(int);
+extern NODE *do_BitmapWidth(int);
+extern NODE *do_BitmapLength(int);
+#if FREEGLUT
+extern NODE *do_BitmapHeight(int);
+extern NODE *do_BitmapString(int);
+#endif
+extern NODE *do_StrokeCharacter(int);
+extern NODE *do_StrokeWidth(int);
+extern NODE *do_StrokeLength(int);
+#if FREEGLUT
+extern NODE *do_StrokeHeight(int);
+extern NODE *do_StrokeString(int);
+#endif
+
+/* loop.c */
+extern NODE *do_MainLoop(int);
+extern NODE *do_MainLoopEvent(int);
+extern NODE *do_LeaveMainLoop(int);
+extern NODE *do_Exit(int);
+extern NODE *do_DisplayFunc(int);
+extern NODE *do_IdleFunc(int);
+extern NODE *do_TimerFunc(int);
+extern NODE *do_PostRedisplay(int);
+extern NODE *do_PostWindowRedisplay(int);
+extern void AgDisplay(void);
+extern void AgIdle(void);
+extern void AgTimer(int);
+
 /* material.c */
 extern NODE *do_ClearColor(int);
 extern NODE *do_Color(int);
@@ -127,10 +145,36 @@ extern NODE *do_Rotate(int);
 extern NODE *do_Transrate(int);
 extern NODE *do_Scale(int);
 
+/* misc.c */
+extern NODE *do_SwapBuffers(int);
+extern NODE *do_Enable(int);
+extern NODE *do_Disable(int);
+extern NODE *do_IsEnabled(int);
+extern NODE *do_PointSize(int);
+extern NODE *do_LineWidth(int);
+extern NODE *do_LineStipple(int);
+extern NODE *do_PolygonMode(int);
+extern NODE *do_FrontFace(int);
+extern NODE *do_CullFace(int);
+extern NODE *do_PolygonOffset(int);
+
 /* util.c */
 extern NODE *do_pi(int);
 extern NODE *do_d2r(int);
 extern NODE *do_r2d(int);
+
+/* veiw.c */
+extern NODE *do_Viewport(int);
+extern NODE *do_Ortho(int);
+extern NODE *do_Frustum(int);
+extern NODE *do_Perspective(int);
+extern NODE *do_Lookat(int);
+
+/* vertex.c */
+extern NODE *do_Begin(int);
+extern NODE *do_End(int);
+extern NODE *do_Vertex2d(int);
+extern NODE *do_Vertex3d(int);
 
 /* window.c */
 extern NODE *do_CreateWindow(int);
@@ -164,32 +208,6 @@ extern void AgReshape(int, int);
 extern void AgClose(void);
 extern void AgWMClose(void);
 #endif
-
-/* veiw.c */
-extern NODE *do_Viewport(int);
-extern NODE *do_Ortho(int);
-extern NODE *do_Frustum(int);
-extern NODE *do_Perspective(int);
-extern NODE *do_Lookat(int);
-
-/* vertex.c */
-extern NODE *do_Begin(int);
-extern NODE *do_End(int);
-extern NODE *do_Vertex2d(int);
-extern NODE *do_Vertex3d(int);
-
-/* misc.c */
-extern NODE *do_SwapBuffers(int);
-extern NODE *do_Enable(int);
-extern NODE *do_Disable(int);
-extern NODE *do_IsEnabled(int);
-extern NODE *do_PointSize(int);
-extern NODE *do_LineWidth(int);
-extern NODE *do_LineStipple(int);
-extern NODE *do_PolygonMode(int);
-extern NODE *do_FrontFace(int);
-extern NODE *do_CullFace(int);
-extern NODE *do_PolygonOffset(int);
 
 /* material.c */
 extern GLenum light_light_s(const char *);
