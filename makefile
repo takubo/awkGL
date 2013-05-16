@@ -9,11 +9,12 @@ LDFLAGS = -shared -lglut -lGLU -lGL -lXext -lX11 -lm -lpthread
 all: awkgl.so
 	gawk 'BEGIN{ extension("./awkgl.so", "dlload") }'
 
-awkgl.so: awkgl.c
-	${CC} $< ${CFLAGS}
-	${CC} awkgl.o -o $@ ${LDFLAGS}
+awkgl.so: awkgl.o bitmap.o device.o draw_geometry.o loop.o material.o matrix.o misc.o util.o vertex.o view.o window.o
+	${CC} $^ -o $@ ${LDFLAGS}
 
+c.o:
+	${CC} ${CFLAGS} $<
 
 .PHONY:clean
 clean:
-	rm awkgl.o awkgl.so
+	rm awkgl.so awkgl.o bitmap.o device.o draw_geometry.o loop.o material.o matrix.o misc.o util.o vertex.o view.o window.o
