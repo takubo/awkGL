@@ -191,6 +191,10 @@ extern NODE *do_FrontFace(int);
 extern NODE *do_CullFace(int);
 extern NODE *do_PolygonOffset(int);
 
+/* material.c */
+extern GLenum light_light_s(const char *);
+extern GLenum material_face(const char *);
+
 void set_default_user_func(void);
 NODE *user_func(void);
 AWKNUM callback_user_func(NODE *, NODE *[], int);

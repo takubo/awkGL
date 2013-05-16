@@ -9,14 +9,14 @@ NODE *do_ClearColor(int);
 NODE *do_Color(int);
 
 NODE *do_Light(int);
-static GLenum light_light_s(const char *);
+GLenum light_light_s(const char *);
 static GLenum light_light_n(int);
 static GLenum light_pname(const char *);
 
 NODE *do_Normal(int);
 
 NODE *do_Material(int);
-static GLenum material_face(const char *);
+GLenum material_face(const char *);
 static GLenum material_pname(const char *);
 
 NODE *
@@ -105,7 +105,8 @@ do_Light(int nargs)
 	return make_number((AWKNUM) 0);
 }
 
-GLenum light_light_s(const char *str)
+GLenum
+light_light_s(const char *str)
 {
 	GLenum light;
 
@@ -130,7 +131,8 @@ GLenum light_light_s(const char *str)
 	return light;
 }
 
-GLenum light_light_n(int num)
+static GLenum
+light_light_n(int num)
 {
 	GLenum light;
 
@@ -198,7 +200,8 @@ GLenum light_light_n(int num)
 // GL_QUADRATIC_ATTENUATION
 // 	2次減衰の率を単独の整数値、または浮動小数点値で指定します
 //	初期値は 0
-GLenum light_pname(const char *str)
+static GLenum
+light_pname(const char *str)
 {
 	GLenum pname;
 
@@ -306,7 +309,8 @@ do_Material(int nargs)
 	return make_number((AWKNUM) 0);
 }
 
-GLenum material_face(const char *str)
+GLenum
+material_face(const char *str)
 {
 	GLenum face;
 
@@ -346,7 +350,8 @@ GLenum material_face(const char *str)
 // GL_COLOR_INDEXES
 // 	環境光、拡散光、鏡面光のカラー指標を
 // 	3つの整数値、または浮動小数点値で指定します
-GLenum material_pname(const char *str)
+static GLenum
+material_pname(const char *str)
 {
 	GLenum pname;
 
