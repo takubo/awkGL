@@ -13,9 +13,10 @@ NODE *
 dlload(NODE *tree, void *dl)
 {
 /* bitmap.c */
-	make_builtin("RasterPos", do_RasterPos, 3);
+	make_builtin("RasterPos", do_RasterPos, 4);
 	make_builtin("PixelZoom", do_PixelZoom, 2);
 	make_builtin("DrawPixels", do_DrawPixels, 5);
+	make_builtin("WindowPos", do_WindowPos, 3);
 
 /* device.c */
 	make_builtin("KeyboardFunc", do_KeyboardFunc, 1);

@@ -44,6 +44,7 @@ extern NODE *WMClose_user_func;
 extern NODE *do_RasterPos(int);
 extern NODE *do_PixelZoom(int);
 extern NODE *do_DrawPixels(int);
+extern NODE *do_WindowPos(int);
 
 /* device.c */
 extern NODE *do_KeyboardFunc(int);

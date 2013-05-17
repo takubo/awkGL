@@ -9,6 +9,7 @@ NODE *do_PixelZoom(int);
 NODE *do_DrawPixels(int);
 static GLenum draw_pixels_format(const char *);
 static GLenum draw_pixels_type(const char *);
+NODE *do_WindowPos(int);
 
 NODE *
 do_RasterPos(int nargs)
@@ -149,4 +150,28 @@ draw_pixels_type(const char *str)
 	}
 
 	return type;
+}
+
+NODE *
+do_WindowPos(int nargs)
+{
+	NODE *tmp;
+	int i;
+	int arg_num = get_curfunc_arg_count();
+	GLdouble v[3]; /* x, y, z */
+
+	for (i = 0; i < arg_num; i++) {
+		tmp = get_scalar_argument(0 + i, FALSE);
+		v[i] = (GLdouble) force_number(tmp);
+	}
+
+	switch (arg_num) {
+	case 2:
+		glWindowPos2dv(v);
+		break;
+	case 3:
+		glWindowPos3dv(v);
+		break;
+	}
+	return make_number((AWKNUM) 0);
 }

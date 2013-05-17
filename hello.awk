@@ -31,6 +31,11 @@ function display()
     }
     StrokeString("STROKE_ROMAN", str)
 
+    WindowPos(10, 380)
+    for (i = 1; i <= length(str); i++) {
+	BitmapCharacter("BITMAP_HELVETICA_12", substr(str, i))
+    }
+
     PopMatrix()
 }
 
