@@ -13,107 +13,107 @@ NODE *
 dlload(NODE *tree, void *dl)
 {
 /* bitmap.c */
-	make_builtin("RasterPos", do_RasterPos, 4);
-	make_builtin("PixelZoom", do_PixelZoom, 2);
-	make_builtin("DrawPixels", do_DrawPixels, 5);
-	make_builtin("WindowPos", do_WindowPos, 3);
+	make_builtin("glRasterPos", do_RasterPos, 4);
+	make_builtin("glPixelZoom", do_PixelZoom, 2);
+	make_builtin("glDrawPixels", do_DrawPixels, 5);
+	make_builtin("glWindowPos", do_WindowPos, 3);
 
 /* device.c */
-	make_builtin("KeyboardFunc", do_KeyboardFunc, 1);
-	make_builtin("KeyboardUpFunc", do_KeyboardUpFunc, 1);
-	make_builtin("SpecialFunc", do_SpecialFunc, 1);
-	make_builtin("SpecialUpFunc", do_SpecialUpFunc, 1);
-	make_builtin("MouseFunc", do_MouseFunc, 1);
-	make_builtin("MotionFunc", do_MotionFunc, 1);
-	make_builtin("PassiveMotionFunc", do_PassiveMotionFunc, 1);
-	make_builtin("GetModifiers", do_GetModifiers, 0);
+	make_builtin("glutKeyboardFunc", do_KeyboardFunc, 1);
+	make_builtin("glutKeyboardUpFunc", do_KeyboardUpFunc, 1);
+	make_builtin("glutSpecialFunc", do_SpecialFunc, 1);
+	make_builtin("glutSpecialUpFunc", do_SpecialUpFunc, 1);
+	make_builtin("glutMouseFunc", do_MouseFunc, 1);
+	make_builtin("glutMotionFunc", do_MotionFunc, 1);
+	make_builtin("glutPassiveMotionFunc", do_PassiveMotionFunc, 1);
+	make_builtin("glutGetModifiers", do_GetModifiers, 0);
 #ifdef HAVE_FREEGLUT
-	make_builtin("MouseWheel", do_MouseWheelFunc, 1);
+	make_builtin("glutMouseWheel", do_MouseWheelFunc, 1);
 #endif
-	make_builtin("EntryFunc", do_EntryFunc, 1);
+	make_builtin("glutEntryFunc", do_EntryFunc, 1);
 
 /* draw_geometry.c */
-	make_builtin("SolidSphere", do_SolidSphere, 3);
-	make_builtin("WireSphere", do_WireSphere, 3);
-	make_builtin("SolidCone", do_SolidCone, 4);
-	make_builtin("WireCone", do_WireCone, 4);
-	make_builtin("SolidCylinder", do_SolidCylinder, 4);
-	make_builtin("WireCylinder", do_WireCylinder, 4);
-	make_builtin("SolidTorus", do_SolidTorus, 4);
-	make_builtin("WireTorus", do_WireTorus, 4);
-	make_builtin("SolidCube", do_SolidCube, 1);
-	make_builtin("WireCube", do_WireCube, 1);
-	make_builtin("SolidTetrahedron", do_SolidTetrahedron, 1);
-	make_builtin("WireTetrahedron", do_WireTetrahedron, 1);
-	make_builtin("SolidOctahedron", do_SolidOctahedron, 1);
-	make_builtin("WireOctahedron", do_WireOctahedron, 1);
-	make_builtin("SolidDodecahedron", do_SolidDodecahedron, 1);
-	make_builtin("WireDodecahedron", do_WireDodecahedron, 1);
-	make_builtin("SolidIcosahedron", do_SolidIcosahedron, 1);
-	make_builtin("WireIcosahedron", do_WireIcosahedron, 1);
-	make_builtin("SolidTeapot", do_SolidTeapot, 1);
-	make_builtin("WireTeapot", do_WireTeapot, 1);
-	// make_builtin("Point", do_Point, 3);
-	// make_builtin("Line", do_Line, 3);
-	make_builtin("DrawCircle", do_DrawCircle, 3);
-	make_builtin("DrawAxes", do_DrawAxes, 1);
+	make_builtin("glutSolidSphere", do_SolidSphere, 3);
+	make_builtin("glutWireSphere", do_WireSphere, 3);
+	make_builtin("glutSolidCone", do_SolidCone, 4);
+	make_builtin("glutWireCone", do_WireCone, 4);
+	make_builtin("glutSolidCylinder", do_SolidCylinder, 4);
+	make_builtin("glutWireCylinder", do_WireCylinder, 4);
+	make_builtin("glutSolidTorus", do_SolidTorus, 4);
+	make_builtin("glutWireTorus", do_WireTorus, 4);
+	make_builtin("glutSolidCube", do_SolidCube, 1);
+	make_builtin("glutWireCube", do_WireCube, 1);
+	make_builtin("glutSolidTetrahedron", do_SolidTetrahedron, 1);
+	make_builtin("glutWireTetrahedron", do_WireTetrahedron, 1);
+	make_builtin("glutSolidOctahedron", do_SolidOctahedron, 1);
+	make_builtin("glutWireOctahedron", do_WireOctahedron, 1);
+	make_builtin("glutSolidDodecahedron", do_SolidDodecahedron, 1);
+	make_builtin("glutWireDodecahedron", do_WireDodecahedron, 1);
+	make_builtin("glutSolidIcosahedron", do_SolidIcosahedron, 1);
+	make_builtin("glutWireIcosahedron", do_WireIcosahedron, 1);
+	make_builtin("glutSolidTeapot", do_SolidTeapot, 1);
+	make_builtin("glutWireTeapot", do_WireTeapot, 1);
+	// make_builtin("glutPoint", do_Point, 3);
+	// make_builtin("glutLine", do_Line, 3);
+	make_builtin("glutDrawCircle", do_DrawCircle, 3);
+	make_builtin("glutDrawAxes", do_DrawAxes, 1);
 
 /* font.c */
-	make_builtin("BitmapCharacter", do_BitmapCharacter, 2);
-	make_builtin("BitmapWidth", do_BitmapWidth, 2);
-	make_builtin("BitmapLength", do_BitmapLength, 2);
+	make_builtin("glutBitmapCharacter", do_BitmapCharacter, 2);
+	make_builtin("glutBitmapWidth", do_BitmapWidth, 2);
+	make_builtin("glutBitmapLength", do_BitmapLength, 2);
 #if FREEGLUT
-	make_builtin("BitmapHeight", do_BitmapHeight, 1);
-	make_builtin("BitmapString", do_BitmapString, 2);
+	make_builtin("glutBitmapHeight", do_BitmapHeight, 1);
+	make_builtin("glutBitmapString", do_BitmapString, 2);
 #endif
-	make_builtin("StrokeCharacter", do_StrokeCharacter, 2);
-	make_builtin("StrokeWidth", do_StrokeWidth, 2);
-	make_builtin("StrokeLength", do_StrokeLength, 2);
+	make_builtin("glutStrokeCharacter", do_StrokeCharacter, 2);
+	make_builtin("glutStrokeWidth", do_StrokeWidth, 2);
+	make_builtin("glutStrokeLength", do_StrokeLength, 2);
 #if FREEGLUT
-	make_builtin("StrokeHeight", do_StrokeHeight, 1);
-	make_builtin("StrokeString", do_StrokeString, 2);
+	make_builtin("glutStrokeHeight", do_StrokeHeight, 1);
+	make_builtin("glutStrokeString", do_StrokeString, 2);
 #endif
 
 /* loop.c */
-	make_builtin("MainLoop", do_MainLoop, 0);
-	make_builtin("MainLoopEvent", do_MainLoopEvent, 0);
-	make_builtin("LeaveMainLoop", do_LeaveMainLoop, 0);
-	make_builtin("Exit", do_Exit, 0);
-	make_builtin("DisplayFunc", do_DisplayFunc, 1);
-	make_builtin("IdleFunc", do_IdleFunc, 1);
-	make_builtin("TimerFunc", do_TimerFunc, 3);
-	make_builtin("PostRedisplay", do_PostRedisplay, 0);
-	make_builtin("PostWindowRedisplay", do_PostWindowRedisplay, 1);
+	make_builtin("glutMainLoop", do_MainLoop, 0);
+	make_builtin("glutMainLoopEvent", do_MainLoopEvent, 0);
+	make_builtin("glutLeaveMainLoop", do_LeaveMainLoop, 0);
+	make_builtin("glutExit", do_Exit, 0);
+	make_builtin("glutDisplayFunc", do_DisplayFunc, 1);
+	make_builtin("glutIdleFunc", do_IdleFunc, 1);
+	make_builtin("glutTimerFunc", do_TimerFunc, 3);
+	make_builtin("glutPostRedisplay", do_PostRedisplay, 0);
+	make_builtin("glutPostWindowRedisplay", do_PostWindowRedisplay, 1);
 
 /* material.c */
-	make_builtin("ClearColor", do_ClearColor, 3);
-	make_builtin("Color", do_Color, 3);
-	make_builtin("Light", do_Light, 9);
-	make_builtin("Normal", do_Normal, 3);
-	make_builtin("Material", do_Material, 8);
+	make_builtin("glClearColor", do_ClearColor, 3);
+	make_builtin("glColor", do_Color, 3);
+	make_builtin("glLight", do_Light, 9);
+	make_builtin("glNormal", do_Normal, 3);
+	make_builtin("glMaterial", do_Material, 8);
 
 /* matrix.c */
-	make_builtin("MatrixMode", do_MatrixMode, 1);
-	make_builtin("LoadIdentity", do_LoadIdentity, 1);
-	make_builtin("PushMatrix", do_PushMatrix, 1);
-	make_builtin("PopMatrix", do_PopMatrix, 1);
-	make_builtin("MultMatrix", do_MultMatrix, 16);//TODO
-	make_builtin("Rotate", do_Rotate, 4);
-	make_builtin("Translate", do_Transrate, 4);
-	make_builtin("Scale", do_Scale, 4);
+	make_builtin("glMatrixMode", do_MatrixMode, 1);
+	make_builtin("glLoadIdentity", do_LoadIdentity, 1);
+	make_builtin("glPushMatrix", do_PushMatrix, 1);
+	make_builtin("glPopMatrix", do_PopMatrix, 1);
+	make_builtin("glMultMatrix", do_MultMatrix, 16);//TODO
+	make_builtin("glRotate", do_Rotate, 4);
+	make_builtin("glTranslate", do_Transrate, 4);
+	make_builtin("glScale", do_Scale, 4);
 
 /* misc.c */
-	make_builtin("SwapBuffers", do_SwapBuffers, 0);
-	make_builtin("Enable", do_Enable, 1);
-	make_builtin("Disable", do_Disable, 1);
-	make_builtin("IsEnabled", do_IsEnabled, 1);
-	make_builtin("PointSize", do_PointSize, 1);
-	make_builtin("LineWidth", do_LineWidth, 1);
-	make_builtin("LineStipple", do_LineStipple, 2);
-	make_builtin("PolygonMode", do_PolygonMode, 2);
-	make_builtin("FrontFace", do_FrontFace, 1);
-	make_builtin("CullFace", do_CullFace, 1);
-	make_builtin("PolygonOffset", do_PolygonOffset, 2);
+	make_builtin("glSwapBuffers", do_SwapBuffers, 0);
+	make_builtin("glEnable", do_Enable, 1);
+	make_builtin("glDisable", do_Disable, 1);
+	make_builtin("glIsEnabled", do_IsEnabled, 1);
+	make_builtin("glPointSize", do_PointSize, 1);
+	make_builtin("glLineWidth", do_LineWidth, 1);
+	make_builtin("glLineStipple", do_LineStipple, 2);
+	make_builtin("glPolygonMode", do_PolygonMode, 2);
+	make_builtin("glFrontFace", do_FrontFace, 1);
+	make_builtin("glCullFace", do_CullFace, 1);
+	make_builtin("glPolygonOffset", do_PolygonOffset, 2);
 
 /* util.c */
 	make_builtin("pi", do_pi, 1);
@@ -125,45 +125,45 @@ dlload(NODE *tree, void *dl)
 	make_builtin("rad2deg", do_r2d, 1);
 
 /* veiw.c */
-	make_builtin("Viewport", do_Viewport, 4);
-	make_builtin("Ortho", do_Ortho, 6);
-	make_builtin("Frustum", do_Frustum, 6);
-	make_builtin("Perspective", do_Perspective, 4);
-	make_builtin("LookAt", do_Lookat, 9);
+	make_builtin("glViewport", do_Viewport, 4);
+	make_builtin("glOrtho", do_Ortho, 6);
+	make_builtin("glFrustum", do_Frustum, 6);
+	make_builtin("gluPerspective", do_Perspective, 4);
+	make_builtin("gluLookAt", do_Lookat, 9);
 
 /* vertex.c */
-	make_builtin("Begin", do_Begin, 3);
-	make_builtin("End", do_End, 3);
-	make_builtin("Vertex2d", do_Vertex2d, 2);
-	make_builtin("Vertex3d", do_Vertex3d, 3);
+	make_builtin("glBegin", do_Begin, 3);
+	make_builtin("glEnd", do_End, 3);
+	make_builtin("glVertex2d", do_Vertex2d, 2);
+	make_builtin("glVertex3d", do_Vertex3d, 3);
 
 /* window.c */
-	make_builtin("CreateWindow", do_CreateWindow, 1);
-	make_builtin("CreateSubWindow", do_CreateSubWindow, 5);
-	make_builtin("DestoyWindow", do_DestroyWindow, 1);
+	make_builtin("glutCreateWindow", do_CreateWindow, 1);
+	make_builtin("glutCreateSubWindow", do_CreateSubWindow, 5);
+	make_builtin("glutDestoyWindow", do_DestroyWindow, 1);
 #ifdef HAVE_FREEGLUT
-	make_builtin("Close", do_CloseFunc, 1);
-	make_builtin("WMClose", do_WMCloseFunc, 1);
+	make_builtin("glutClose", do_CloseFunc, 1);
+	make_builtin("glutWMClose", do_WMCloseFunc, 1);
 #endif
-	make_builtin("GetWindow", do_GetWindow, 0);
-	make_builtin("SetWindow", do_SetWindow, 1);
-	make_builtin("SetWindowPosSize", do_SetWindowPosSize, 4);
-	make_builtin("PositionWindow", do_PositionWindow, 2);
-	make_builtin("ReshapeWindow", do_ReshapeWindow, 2);
-	make_builtin("SetWindowTitle", do_SetWindowTitle, 1);
-	make_builtin("SetIconTitle", do_SetIconTitle, 1);
-	make_builtin("ShowWindow", do_ShowWindow, 0);
-	make_builtin("HideWindow", do_HideWindow, 0);
-	make_builtin("IconifyWindow", do_IconifyWindow, 0);
-	make_builtin("PushWindow", do_PushWindow, 0);
-	make_builtin("PopWindow", do_PopWindow, 0);
-	make_builtin("FullScreen", do_FullScreen, 0);
+	make_builtin("glutGetWindow", do_GetWindow, 0);
+	make_builtin("glutSetWindow", do_SetWindow, 1);
+	make_builtin("glutSetWindowPosSize", do_SetWindowPosSize, 4);
+	make_builtin("glutPositionWindow", do_PositionWindow, 2);
+	make_builtin("glutReshapeWindow", do_ReshapeWindow, 2);
+	make_builtin("glutSetWindowTitle", do_SetWindowTitle, 1);
+	make_builtin("glutSetIconTitle", do_SetIconTitle, 1);
+	make_builtin("glutShowWindow", do_ShowWindow, 0);
+	make_builtin("glutHideWindow", do_HideWindow, 0);
+	make_builtin("glutIconifyWindow", do_IconifyWindow, 0);
+	make_builtin("glutPushWindow", do_PushWindow, 0);
+	make_builtin("glutPopWindow", do_PopWindow, 0);
+	make_builtin("glutFullScreen", do_FullScreen, 0);
 #if 0
-	make_builtin("LeaveFullScreen", do_LeaveFullScreen, 0);
+	make_builtin("glutLeaveFullScreen", do_LeaveFullScreen, 0);
 #endif
-	make_builtin("FullScreenToggle", do_FullScreenToggle, 0);
-	// make_builtin("GameMode", do_GameMode, 1);
-	make_builtin("ReshapeFunc", do_ReshapeFunc, 4);
+	make_builtin("glutFullScreenToggle", do_FullScreenToggle, 0);
+	// make_builtin("glutGameMode", do_GameMode, 1);
+	make_builtin("glutReshapeFunc", do_ReshapeFunc, 4);
 
 	int argc=0; char *argv[1]; glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
